@@ -8,6 +8,7 @@ import flixel.FlxG;
 import flixel.addons.util.FlxSimplex;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.util.FlxColor;
 import gameObjects.userInterface.HealthIcon;
 import meta.*;
 import meta.data.*;
@@ -24,6 +25,9 @@ typedef CharacterData =
 	var camOffsetX:Float;
 	var camOffsetY:Float;
 	var quickDancer:Bool;
+	var healthbarColor:FlxColor;
+	var healthIcon:String;
+	var deathCharacter:String;
 }
 
 class Character extends FNFSprite
@@ -55,7 +59,10 @@ class Character extends FNFSprite
 			offsetX: 0,
 			camOffsetY: 0,
 			camOffsetX: 0,
-			quickDancer: false
+			quickDancer: false,
+			healthIcon: 'face',
+			healthbarColor: FlxColor.fromRGB(192, 192, 192),
+			deathCharacter: 'bf-dead'
 		};
 
 		switch (curCharacter)
@@ -78,6 +85,8 @@ class Character extends FNFSprite
 
 				playAnim('danceRight');
 
+				characterData.healthIcon = 'gf';
+				characterData.healthbarColor = FlxColor.fromRGB(255, 0, 20);
 			case 'gf-christmas':
 				tex = Paths.getSparrowAtlas('characters/gfChristmas');
 				frames = tex;
@@ -143,6 +152,8 @@ class Character extends FNFSprite
 				animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24);
 				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24);
 
+				characterData.healthIcon = 'dad';
+				characterData.healthbarColor = FlxColor.fromRGB(175, 102, 206);
 				playAnim('idle');
 			case 'spooky':
 				tex = Paths.getSparrowAtlas('characters/spooky_kids_assets');
@@ -155,6 +166,8 @@ class Character extends FNFSprite
 				animation.addByIndices('danceRight', 'spooky dance idle', [8, 10, 12, 14], "", 12, false);
 
 				characterData.quickDancer = true;
+				characterData.healthIcon = 'spooky';
+				characterData.healthbarColor = FlxColor.fromRGB(213, 126, 0);
 
 				playAnim('danceRight');
 			case 'mom':
@@ -175,6 +188,8 @@ class Character extends FNFSprite
 				playAnim('idle');
 
 				characterData.camOffsetY = 100;
+				characterData.healthIcon = 'mom';
+				characterData.healthbarColor = FlxColor.fromRGB(216, 85, 142);
 			case 'mom-car':
 				tex = Paths.getSparrowAtlas('characters/momCar');
 				frames = tex;
@@ -189,6 +204,8 @@ class Character extends FNFSprite
 				animation.addByPrefix('singRIGHT', 'Mom Pose Left', 24, false);
 
 				playAnim('idle');
+				characterData.healthIcon = 'mom';
+				characterData.healthbarColor = FlxColor.fromRGB(216, 85, 142);
 			case 'monster':
 				tex = Paths.getSparrowAtlas('characters/Monster_Assets');
 				frames = tex;
@@ -199,7 +216,8 @@ class Character extends FNFSprite
 				animation.addByPrefix('singRIGHT', 'Monster left note', 24, false);
 
 				playAnim('idle');
-
+				characterData.healthIcon = 'monster';
+				characterData.healthbarColor = FlxColor.fromRGB(255, 255, 0);
 			case 'monster-christmas':
 				tex = Paths.getSparrowAtlas('characters/monsterChristmas');
 				frames = tex;
@@ -210,6 +228,8 @@ class Character extends FNFSprite
 				animation.addByPrefix('singLEFT', 'Monster Right note', 24, false);
 
 				playAnim('idle');
+				characterData.healthIcon = 'monster';
+				characterData.healthbarColor = FlxColor.fromRGB(255, 255, 0);
 			case 'pico':
 				tex = Paths.getSparrowAtlas('characters/Pico_FNF_assetss');
 				frames = tex;
@@ -238,7 +258,8 @@ class Character extends FNFSprite
 				playAnim('idle');
 
 				flipX = true;
-
+				characterData.healthIcon = 'pico';
+				characterData.healthbarColor = FlxColor.fromRGB(183, 216, 85);
 			case 'bf':
 				frames = Paths.getSparrowAtlas('characters/BOYFRIEND');
 
@@ -259,6 +280,8 @@ class Character extends FNFSprite
 				flipX = true;
 
 				characterData.offsetY = 70;
+				characterData.healthIcon = 'bf';
+				characterData.healthbarColor = FlxColor.fromRGB(49, 176, 209);
 			/*
 				case 'bf-og':
 					frames = Paths.getSparrowAtlas('characters/og/BOYFRIEND');
@@ -337,6 +360,8 @@ class Character extends FNFSprite
 				playAnim('idle');
 
 				flipX = true;
+				characterData.healthIcon = 'bf';
+				characterData.healthbarColor = FlxColor.fromRGB(49, 176, 209);
 			case 'bf-car':
 				var tex = Paths.getSparrowAtlas('characters/bfCar');
 				frames = tex;
@@ -354,6 +379,8 @@ class Character extends FNFSprite
 				playAnim('idle');
 
 				flipX = true;
+				characterData.healthIcon = 'bf';
+				characterData.healthbarColor = FlxColor.fromRGB(49, 176, 209);
 			case 'bf-pixel':
 				frames = Paths.getSparrowAtlas('characters/bfPixel');
 				animation.addByPrefix('idle', 'BF IDLE', 24, false);
@@ -377,6 +404,9 @@ class Character extends FNFSprite
 				antialiasing = false;
 
 				flipX = true;
+				characterData.healthIcon = 'bf-pixel';
+				characterData.healthbarColor = FlxColor.fromRGB(49, 176, 209);
+				characterData.deathCharacter = 'bf-pixel-dead';
 			case 'bf-pixel-dead':
 				frames = Paths.getSparrowAtlas('characters/bfPixelsDEAD');
 				animation.addByPrefix('singUP', "BF Dies pixel", 24, false);
@@ -410,6 +440,8 @@ class Character extends FNFSprite
 
 				characterData.camOffsetY = -330;
 				characterData.camOffsetX = -200;
+				characterData.healthIcon = 'senpai';
+				characterData.healthbarColor = FlxColor.fromRGB(255, 170, 111);
 			case 'senpai-angry':
 				frames = Paths.getSparrowAtlas('characters/senpai');
 				animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
@@ -425,6 +457,8 @@ class Character extends FNFSprite
 
 				characterData.camOffsetY = -330;
 				characterData.camOffsetX = -200;
+				characterData.healthIcon = 'senpai';
+				characterData.healthbarColor = FlxColor.fromRGB(255, 170, 111);
 			case 'spirit':
 				frames = Paths.getPackerAtlas('characters/spirit');
 				animation.addByPrefix('idle', "idle spirit_", 24, false);
@@ -443,7 +477,8 @@ class Character extends FNFSprite
 
 				characterData.camOffsetY = 50;
 				characterData.camOffsetX = 100;
-
+				characterData.healthIcon = 'spirit';
+				characterData.healthbarColor = FlxColor.fromRGB(255, 60, 110);
 			case 'parents-christmas':
 				frames = Paths.getSparrowAtlas('characters/mom_dad_christmas_assets');
 				animation.addByPrefix('idle', 'Parent Christmas Idle', 24, false);
@@ -459,6 +494,8 @@ class Character extends FNFSprite
 				animation.addByPrefix('singRIGHT-alt', 'Parent Right Note Mom', 24, false);
 
 				playAnim('idle');
+				characterData.healthIcon = 'parents';
+				characterData.healthbarColor = FlxColor.fromRGB(196, 94, 174);
 			default:
 				// set up animations if they aren't already
 

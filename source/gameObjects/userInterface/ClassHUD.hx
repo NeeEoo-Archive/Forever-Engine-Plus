@@ -52,7 +52,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	var infoDisplay:String = CoolUtil.dashToSpace(PlayState.SONG.song);
 	var diffDisplay:String = CoolUtil.difficultyFromNumber(PlayState.storyDifficulty);
-	var engineDisplay:String = "FOREVER ENGINE v" + Main.gameVersion;
+	var engineDisplay:String = "FOREVER ENGINE PLUS v" + Main.engineVersion;
 
 	// eep
 	public function new()
@@ -73,15 +73,15 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
 		healthBar.scrollFactor.set();
-		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
+		healthBar.createFilledBar(PlayState.dadOpponent.characterData.healthbarColor, PlayState.boyfriend.characterData.healthbarColor);
 		// healthBar
 		add(healthBar);
 
-		iconP1 = new HealthIcon(SONG.player1, true);
+		iconP1 = new HealthIcon(PlayState.boyfriend.characterData.healthIcon, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
 
-		iconP2 = new HealthIcon(SONG.player2, false);
+		iconP2 = new HealthIcon(PlayState.dadOpponent.characterData.healthIcon, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 

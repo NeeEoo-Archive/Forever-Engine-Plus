@@ -22,25 +22,12 @@ class GameOverSubstate extends MusicBeatSubState
 
 	public function new(x:Float, y:Float)
 	{
-		var daBoyfriendType = PlayState.boyfriend.curCharacter;
-		var daBf:String = '';
-		switch (daBoyfriendType)
-		{
-			case 'bf-og':
-				daBf = daBoyfriendType;
-			case 'bf-pixel':
-				daBf = 'bf-pixel-dead';
-				stageSuffix = '-pixel';
-			default:
-				daBf = 'bf-dead';
-		}
-
 		super();
 
 		Conductor.songPosition = 0;
 
 		bf = new Boyfriend();
-		bf.setCharacter(x, y + PlayState.boyfriend.height, daBf);
+		bf.setCharacter(x, y + PlayState.boyfriend.height, PlayState.boyfriend.characterData.deathCharacter);
 		add(bf);
 
 		PlayState.boyfriend.destroy();

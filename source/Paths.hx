@@ -243,6 +243,11 @@ class Paths
 		return getPath('$key.txt', TEXT, library);
 	}
 
+	inline static public function data(key:String, ?library:String)
+	{
+		return getPath('data/$key', TEXT, library);
+	}
+
 	inline static public function xml(key:String, ?library:String)
 	{
 		return getPath('data/$key.xml', TEXT, library);
