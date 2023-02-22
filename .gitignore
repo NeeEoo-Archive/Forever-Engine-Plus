@@ -1,0 +1,4 @@
+.vscode/
+.haxelib/
+export/
+docs/legacy-docs/_build
