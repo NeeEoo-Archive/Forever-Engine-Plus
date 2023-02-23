@@ -69,8 +69,8 @@ class Overlay extends TextField
 		{
 			text = '' // set up the text itself
 				+ (displayFps ? "FPS: " + times.length + "\n" : '') // Framerate
-			#if !neko + (displayExtra ? "State: " + Main.mainClassState + "\n" : '') #end // Current Game State
-			+ (displayMemory ? 'Memory: ${getInterval(mem)}\nMem Peak: ${getInterval(memPeak)}' : ''); // Current and Total Memory Usage
+			+ (displayMemory ? 'Memory: ${getInterval(mem)}\nMem Peak: ${getInterval(memPeak)}' : '') // Current and Total Memory Usage
+			#if !neko + (displayExtra ? "\nState: " + Main.mainClassState : ''); #else ; #end // Current Game State
 		}
 	}
 

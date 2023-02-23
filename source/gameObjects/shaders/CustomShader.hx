@@ -7,7 +7,8 @@ import scripting.HScript;
 import sys.io.File;
 
 /**
- * A wip shader that has a script.
+ * A shader with a script.
+ * @author Sword352
  */
 class CustomShader
 {

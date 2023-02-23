@@ -6,7 +6,8 @@ import flixel.FlxSprite;
 import openfl.filters.ShaderFilter;
 
 /**
- * A wip shader manager to add shaders to your states and substates.
+ * A shader manager to add shaders to your states and substates.
+ * @author Sword352
  */
 class ShaderManager
 {
@@ -20,6 +21,7 @@ class ShaderManager
     public function addShader(name:String, applyArray:Array<FlxBasic>)
     {
         var newShader:CustomShader = new CustomShader(name);
+		shaders[name] = newShader;
 
 		for (object in applyArray)
 		{

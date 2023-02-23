@@ -1,14 +1,19 @@
 function onCreate()
 {
     loadShader('chromatic aberration');
-    shaderData.rOffset.value = [0.002];
-    shaderData.rOffset.value = [-0.002];
+    shaderData.rOffset.value = [0.008];
+    shaderData.rOffset.value = [-0.008];
 }
 
-var time:Float;
+var rgbOffset:Float;
 function onUpdate(elapsed:Float)
 {
-    time += elapsed;
-    shaderData.rOffset.value = [0.002 * Math.sin(time)];
-    shaderData.rOffset.value = [-0.002 * Math.sin(time)]; 
+    rgbOffset = FlxMath.lerp(rgbOffset, 0.001, 0.05);
+    shaderData.rOffset.value = [rgbOffset];
+    shaderData.bOffset.value = [-rgbOffset]; 
+}
+
+function onBeat(curBeat)
+{
+    if(curBeat % 2 == 0) rgbOffset = 0.007;
 }
