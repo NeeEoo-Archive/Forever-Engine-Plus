@@ -368,36 +368,8 @@ class PlayState extends MusicBeatState
 		else
 			startCountdown();
 
-		/**
-		 * SHADERS
-		 *
-		 * This is a highly experimental code by gedehari to support runtime shader parsing.
-		 * Usually, to add a shader, you would make it a class, but now, I modified it so
-		 * you can parse it from a file.
-		 *
-		 * This feature is planned to be used for modcharts
-		 * (at this time of writing, it's not available yet).
-		 *
-		 * This example below shows that you can apply shaders as a FlxCamera filter.
-		 * the GraphicsShader class accepts two arguments, one is for vertex shader, and
-		 * the second is for fragment shader.
-		 * Pass in an empty string to use the default vertex/fragment shader.
-		 *
-		 * Next, the Shader is passed to a new instance of ShaderFilter, neccesary to make
-		 * the filter work. And that's it!
-		 *
-		 * To access shader uniforms, just reference the `data` property of the GraphicsShader
-		 * instance.
-		 *
-		 * Thank you for reading! -gedehari
-		 */
-
-		// Uncomment the code below to apply the effect
-
-		/*
-			var shader:GraphicsShader = new GraphicsShader("", File.getContent("./assets/shaders/vhs.frag"));
-			FlxG.camera.setFilters([new ShaderFilter(shader)]);
-		 */
+		shaders.addShader('chromatic aberration', [camGame]);
+		shaders.setShaderVariable('chromatic aberration', 'rOffset', 0.002);
 	}
 
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>

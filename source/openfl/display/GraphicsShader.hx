@@ -131,4 +131,191 @@ class GraphicsShader extends Shader
 			}
 		}
 	}
+
+	/**
+	 * Modify a float parameter of the shader.
+	 * @param name The name of the parameter to modify.
+	 * @param value The new value to use.
+	 */
+	public function setFloat(name:String, value:Float):Void
+	{
+		var prop:ShaderParameter<Float> = Reflect.field(this.data, name);
+		@:privateAccess
+		if (prop == null)
+		{
+			trace('[WARN] Shader float property ${name} not found.');
+			return;
+		}
+		prop.value = [value];
+	}
+
+	/**
+	 * Modify a float array parameter of the shader.
+	 * @param name The name of the parameter to modify.
+	 * @param value The new value to use.
+	 */
+	public function setFloatArray(name:String, value:Array<Float>):Void
+	{
+		var prop:ShaderParameter<Float> = Reflect.field(this.data, name);
+		if (prop == null)
+		{
+			trace('[WARN] Shader float[] property ${name} not found.');
+			return;
+		}
+		prop.value = value;
+	}
+
+	/**
+	 * Modify an integer parameter of the shader.
+	 * @param name The name of the parameter to modify.
+	 * @param value The new value to use.
+	 */
+	public function setInt(name:String, value:Int):Void
+	{
+		var prop:ShaderParameter<Int> = Reflect.field(this.data, name);
+		if (prop == null)
+		{
+			trace('[WARN] Shader int property ${name} not found.');
+			return;
+		}
+		prop.value = [value];
+	}
+
+	/**
+	 * Modify an integer array parameter of the shader.
+	 * @param name The name of the parameter to modify.
+	 * @param value The new value to use.
+	 */
+	public function setIntArray(name:String, value:Array<Int>):Void
+	{
+		var prop:ShaderParameter<Int> = Reflect.field(this.data, name);
+		if (prop == null)
+		{
+			trace('[WARN] Shader int[] property ${name} not found.');
+			return;
+		}
+		prop.value = value;
+	}
+
+	/**
+	 * Modify a boolean parameter of the shader.
+	 * @param name The name of the parameter to modify.
+	 * @param value The new value to use.
+	 */
+	public function setBool(name:String, value:Bool):Void
+	{
+		var prop:ShaderParameter<Bool> = Reflect.field(this.data, name);
+		if (prop == null)
+		{
+			trace('[WARN] Shader bool property ${name} not found.');
+			return;
+		}
+		prop.value = [value];
+	}
+
+	/**
+	 * Modify a boolean array parameter of the shader.
+	 * @param name The name of the parameter to modify.
+	 * @param value The new value to use.
+	 */
+	public function setBoolArray(name:String, value:Array<Bool>):Void
+	{
+		var prop:ShaderParameter<Bool> = Reflect.field(this.data, name);
+		if (prop == null)
+		{
+			trace('[WARN] Shader bool[] property ${name} not found.');
+			return;
+		}
+		prop.value = value;
+	}
+
+	/**
+	 * Retrieve a float parameter of the shader.
+	 * @param name The name of the parameter to retrieve.
+	 */
+	public function getFloat(name:String):Null<Float>
+	{
+		var prop:ShaderParameter<Float> = Reflect.field(this.data, name);
+		if (prop == null || prop.value.length == 0)
+		{
+			trace('[WARN] Shader float property ${name} not found.');
+			return null;
+		}
+		return prop.value[0];
+	}
+
+	/**
+	 * Retrieve a float array parameter of the shader.
+	 * @param name The name of the parameter to retrieve.
+	 */
+	public function getFloatArray(name:String):Null<Array<Float>>
+	{
+		var prop:ShaderParameter<Float> = Reflect.field(this.data, name);
+		if (prop == null)
+		{
+			trace('[WARN] Shader float[] property ${name} not found.');
+			return null;
+		}
+		return prop.value;
+	}
+
+	/**
+	 * Retrieve an integer parameter of the shader.
+	 * @param name The name of the parameter to retrieve.
+	 */
+	public function getInt(name:String):Null<Int>
+	{
+		var prop:ShaderParameter<Int> = Reflect.field(this.data, name);
+		if (prop == null || prop.value.length == 0)
+		{
+			trace('[WARN] Shader int property ${name} not found.');
+			return null;
+		}
+		return prop.value[0];
+	}
+
+	/**
+	 * Retrieve an integer array parameter of the shader.
+	 * @param name The name of the parameter to retrieve.
+	 */
+	public function getIntArray(name:String):Null<Array<Int>>
+	{
+		var prop:ShaderParameter<Int> = Reflect.field(this.data, name);
+		if (prop == null)
+		{
+			trace('[WARN] Shader int[] property ${name} not found.');
+			return null;
+		}
+		return prop.value;
+	}
+
+	/**
+	 * Retrieve a boolean parameter of the shader.
+	 * @param name The name of the parameter to retrieve.
+	 */
+	public function getBool(name:String):Null<Bool>
+	{
+		var prop:ShaderParameter<Bool> = Reflect.field(this.data, name);
+		if (prop == null || prop.value.length == 0)
+		{
+			trace('[WARN] Shader bool property ${name} not found.');
+			return null;
+		}
+		return prop.value[0];
+	}
+
+	/**
+	 * Retrieve a boolean array parameter of the shader.
+	 * @param name The name of the parameter to retrieve.
+	 */
+	public function getBoolArray(name:String):Null<Array<Bool>>
+	{
+		var prop:ShaderParameter<Bool> = Reflect.field(this.data, name);
+		if (prop == null)
+		{
+			trace('[WARN] Shader bool[] property ${name} not found.');
+			return null;
+		}
+		return prop.value;
+	}
 }

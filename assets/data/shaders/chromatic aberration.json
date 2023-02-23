@@ -1,0 +1,13 @@
+{
+    "frag": "chromatic aberration", 
+    "variablesToChangeOnCreate": [
+        {
+            "variable": "rOffset",
+            "value": 0.004
+        },
+        {
+            "variable": "bOffset",
+            "value": 0.004
+        }
+    ]
+}

@@ -248,6 +248,21 @@ class Paths
 		return getPath('data/$key', TEXT, library);
 	}
 
+	inline static public function jsonShader(key:String, ?library:String)
+	{
+		return getPath('data/shaders/$key.json', TEXT, library);
+	}
+
+	inline static public function shaderFragment(key:String, ?library:String)
+	{
+		return getPath('shaders/$key.frag', TEXT, library);
+	}
+
+	inline static public function shaderVertex(key:String, ?library:String)
+	{
+		return getPath('shaders/$key.vert', TEXT, library);
+	}
+	
 	inline static public function xml(key:String, ?library:String)
 	{
 		return getPath('data/$key.xml', TEXT, library);

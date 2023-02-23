@@ -27,6 +27,7 @@ class MusicBeatState extends FNFUIState
 	public var curBeat:Int = 0;
 
 	private var controls(get, never):Controls;
+	private var shaders:ShaderInstance;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -36,6 +37,7 @@ class MusicBeatState extends FNFUIState
 	{
 		// dump
 		Paths.clearStoredMemory();
+		shaders = new ShaderInstance();
 		if ((!Std.isOfType(this, meta.state.PlayState)) && (!Std.isOfType(this, meta.state.charting.OriginalChartingState)))
 			Paths.clearUnusedMemory();
 
@@ -139,6 +141,7 @@ class MusicBeatSubState extends FlxSubState
 	public function new()
 	{
 		super();
+		shaders = new ShaderInstance();
 	}
 
 	private var lastBeat:Float = 0;
@@ -147,6 +150,7 @@ class MusicBeatSubState extends FlxSubState
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var controls(get, never):Controls;
+	private var shaders:ShaderInstance;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
