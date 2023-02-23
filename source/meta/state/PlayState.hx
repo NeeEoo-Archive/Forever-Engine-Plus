@@ -368,10 +368,10 @@ class PlayState extends MusicBeatState
 		else
 			startCountdown();
 
-		shaders.addShader('chromatic aberration', [camGame, camHUD]);
-		shaders.addShader('vhs', [camGame]);
-		shaders.shaders['chromatic aberration'].data.rOffset.value = [1];
-		shaders.shaders['chromatic aberration'].data.bOffset.value = [-1];
+		/**
+		 * To test the shader handler, you can uncomment this code to apply the effect.
+		 */
+		//shaders.addShader('chromatic aberration', [camGame]);
 	}
 
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>

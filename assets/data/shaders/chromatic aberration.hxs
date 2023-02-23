@@ -1,0 +1,14 @@
+function onCreate()
+{
+    loadShader('chromatic aberration');
+    shaderData.rOffset.value = [0.002];
+    shaderData.rOffset.value = [-0.002];
+}
+
+var time:Float;
+function onUpdate(elapsed:Float)
+{
+    time += elapsed;
+    shaderData.rOffset.value = [0.002 * Math.sin(time)];
+    shaderData.rOffset.value = [-0.002 * Math.sin(time)]; 
+}

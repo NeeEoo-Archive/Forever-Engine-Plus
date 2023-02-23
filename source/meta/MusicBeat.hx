@@ -5,6 +5,7 @@ import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
+import gameObjects.shaders.ShaderManager;
 import meta.*;
 import meta.data.*;
 import meta.data.Conductor.BPMChangeEvent;
@@ -27,7 +28,7 @@ class MusicBeatState extends FNFUIState
 	public var curBeat:Int = 0;
 
 	private var controls(get, never):Controls;
-	private var shaders:ShaderInstance;
+	private var shaders:ShaderManager;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -37,7 +38,7 @@ class MusicBeatState extends FNFUIState
 	{
 		// dump
 		Paths.clearStoredMemory();
-		shaders = new ShaderInstance();
+		shaders = new ShaderManager();
 		if ((!Std.isOfType(this, meta.state.PlayState)) && (!Std.isOfType(this, meta.state.charting.OriginalChartingState)))
 			Paths.clearUnusedMemory();
 
@@ -56,8 +57,8 @@ class MusicBeatState extends FNFUIState
 	override function update(elapsed:Float)
 	{
 		updateContents();
-
 		super.update(elapsed);
+		shaders.update(elapsed);
 	}
 
 	public function updateContents()
@@ -133,6 +134,7 @@ class MusicBeatState extends FNFUIState
 	public function beatHit():Void
 	{
 		// used for updates when beats are hit in classes that extend this one
+		shaders.beatHit(curBeat);
 	}
 }
 
@@ -141,7 +143,7 @@ class MusicBeatSubState extends FlxSubState
 	public function new()
 	{
 		super();
-		shaders = new ShaderInstance();
+		shaders = new ShaderManager();
 	}
 
 	private var lastBeat:Float = 0;
@@ -150,7 +152,7 @@ class MusicBeatSubState extends FlxSubState
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var controls(get, never):Controls;
-	private var shaders:ShaderInstance;
+	private var shaders:ShaderManager;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -167,6 +169,7 @@ class MusicBeatSubState extends FlxSubState
 			stepHit();
 
 		super.update(elapsed);
+		shaders.update(elapsed);
 	}
 
 	private function updateCurStep():Void
@@ -193,6 +196,6 @@ class MusicBeatSubState extends FlxSubState
 
 	public function beatHit():Void
 	{
-		// do literally nothing dumbass
+		shaders.beatHit(curBeat);
 	}
 }
