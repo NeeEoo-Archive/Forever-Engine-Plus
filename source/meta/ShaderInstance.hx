@@ -54,7 +54,7 @@ class ShaderInstance
             }
             else if(object is FlxCamera)
             {
-                cast(object, FlxCamera).setFilters([new ShaderFilter(shader)]);
+                cast(object, FlxCamera).filters.push(new ShaderFilter(shader));
             }
         }
     }
@@ -70,23 +70,6 @@ class ShaderInstance
 		var vert:String = File.getContent(Paths.shaderVertex(shaderFile.vert));
 
         var newShader:FlxGraphicsShader = new FlxGraphicsShader(vert, frag);
-
-        if(shaderFile.variablesToChangeOnCreate != null && shaderFile.variablesToChangeOnCreate.length > 0)
-        {
-            for(i in 0...shaderFile.variablesToChangeOnCreate.length)
-            {
-                var daVariable = shaderFile.variablesToChangeOnCreate[i];
-				switch(Type.getClass(daVariable.value))
-				{
-                    case Bool: newShader.setBool(daVariable.variable, daVariable.value);
-					case Int: newShader.setInt(daVariable.variable, daVariable.value);
-					case Float: newShader.setFloat(daVariable.variable, daVariable.value);
-					/*case Array<Bool>: newShader.setBool(daVariable.variable, daVariable.value);
-					case Array<Int>: newShader.setInt(daVariable.variable, daVariable.value);
-					case Array<Float>: newShader.setFloat(daVariable.variable, daVariable.value);*/
-                }
-			}
-        }
 
         shaders[name] = newShader;
         return shaders[name];
@@ -117,16 +100,6 @@ class ShaderInstance
      */
     public function setShaderVariable(name:String, variable:String, value:Dynamic)
     {
-        var shader = shaders[name];
-
-		switch(Type.getClass(value))
-		{
-			case Bool: shader.setBool(variable, value);
-			case Int: shader.setInt(variable, value);
-			case Float: shader.setFloat(variable, value);
-				/*case Array<Bool>: shader.setBoolArray(variable, value);
-					case Array<Int>: shader.setIntArray(variable, value);
-					case Array<Float>: shader.setFloatArray(variable, value); */
-		}
+        shaders[name].setVariable(variable, value);
     }
 }
