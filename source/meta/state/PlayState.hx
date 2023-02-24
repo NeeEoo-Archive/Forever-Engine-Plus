@@ -374,21 +374,18 @@ class PlayState extends MusicBeatState
 		 */
 		//shaders.addShader('chromatic aberration', [camGame]);
 
-		if(openfl.Assets.exists(Paths.songData(curSong, 'shaders.hxs')))
-		{
-			var script = new HScript(Paths.songData(curSong, 'shaders.hxs'));
-			script.set("bf", boyfriend);
-			script.set("dad", dadOpponent);
-			script.set("gf", gf);
-			script.set("camGame", camGame);
-			script.set("camHUD", camHUD);
-			script.set("camDadStrums", strumHUD[0]);
-			script.set("camBfStrums", strumHUD[1]);
-			script.set("addShader", function(shader:String, applyArray:Array<FlxBasic>) {
-				shaders.addShader(shader, applyArray);
-			});
-			script.call("onCreate");
-		}
+		var script = new HScript(Paths.songScript(curSong.toLowerCase().replace(" ", "-"), "shaders.hxs"));
+		script.set("bf", boyfriend);
+		script.set("dad", dadOpponent);
+		script.set("gf", gf);
+		script.set("camGame", camGame);
+		script.set("camHUD", camHUD);
+		script.set("camDadStrums", strumHUD[0]);
+		script.set("camBfStrums", strumHUD[1]);
+		script.set("addShader", function(shader:String, applyArray:Array<FlxBasic>){
+			shaders.addShader(shader, applyArray);
+		});
+		script.call("onCreate");
 	}
 
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>

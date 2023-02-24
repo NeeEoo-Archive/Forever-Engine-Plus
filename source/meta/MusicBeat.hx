@@ -143,7 +143,7 @@ class MusicBeatSubState extends FlxSubState
 	public function new()
 	{
 		super();
-		shaders = new ShaderManager();
+		shaders = new SubstateShaderManager();
 	}
 
 	private var lastBeat:Float = 0;
@@ -152,7 +152,7 @@ class MusicBeatSubState extends FlxSubState
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var controls(get, never):Controls;
-	private var shaders:ShaderManager;
+	private var shaders:SubstateShaderManager;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -197,5 +197,11 @@ class MusicBeatSubState extends FlxSubState
 	public function beatHit():Void
 	{
 		shaders.beatHit(curBeat);
+	}
+
+	override function close()
+	{
+		shaders.clearShaders();
+		super.close();
 	}
 }

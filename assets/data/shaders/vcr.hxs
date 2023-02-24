@@ -1,0 +1,9 @@
+function onCreate()
+{
+    loadShader("vcr");
+}
+
+function onUpdate(elapsed)
+{
+    shaderData.iTime.value = [Conductor.songPosition / 1000];
+}

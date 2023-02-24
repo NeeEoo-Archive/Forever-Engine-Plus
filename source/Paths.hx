@@ -17,6 +17,7 @@ import openfl.utils.Assets as OpenFlAssets;
 import sys.FileSystem;
 import sys.io.File;
 
+using StringTools;
 class Paths
 {
 	// Here we set up the paths class. This will be used to
@@ -266,8 +267,8 @@ class Paths
 	inline static public function songJson(song:String, secondSong:String, ?library:String)
 		return getPath('songs/${song.toLowerCase()}/${secondSong.toLowerCase()}.json', TEXT, library);
 
-	inline static public function songData(song:String, file:String, ?library:String)
-		return getPath('songs/${song.toLowerCase()}/${file.toLowerCase()}', TEXT, library);
+	inline static public function songScript(song:String, file:String, ?library:String)
+		return getPath('songs/${song.toLowerCase().replace(" ", "-")}/$file', TEXT, library);
 
 	static public function sound(key:String, ?library:String):Dynamic
 	{

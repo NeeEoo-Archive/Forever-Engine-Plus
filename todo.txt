@@ -1,5 +1,4 @@
 // ONLY SWORD CAN DO THESE
-shaders support (done i think)
 cutscenes support (so ez)
 timebar option (so ez)
 remove valid score from the song class (so ez)
@@ -9,6 +8,7 @@ make a good readme with an actual logo lol
 discord rpc update
 credits menu
 softcoded stages
+playstate changeables (playback speed, practice mode etc)
 softcoded modcharts
 custom notetypes
 custom events

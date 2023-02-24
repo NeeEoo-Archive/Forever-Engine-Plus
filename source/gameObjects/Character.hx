@@ -499,6 +499,16 @@ class Character extends FNFSprite
 			default: return setCharacter(x, y, 'bf');
 		}
 
+		if (OpenFlAssets.exists(Paths.getPath('images/characters/${curCharacter}Offsets.txt', TEXT)))
+		{
+			var characterOffsets:Array<String> = CoolUtil.coolTextFile(Paths.getPath('images/characters/${curCharacter}Offsets.txt', TEXT));
+			for (i in 0...characterOffsets.length)
+			{
+				var getterArray:Array<Array<String>> = getOffsetsFromTxt(Paths.getPath('images/characters/${curCharacter}Offsets.txt', TEXT));
+				addOffset(getterArray[i][0], Std.parseInt(getterArray[i][1]), Std.parseInt(getterArray[i][2]));
+			}
+		}
+
 		dance();
 
 		if (isPlayer) // fuck you ninjamuffin lmao
@@ -524,6 +534,19 @@ class Character extends FNFSprite
 		this.y = y;
 
 		return this;
+	}
+
+	function getOffsetsFromTxt(path:String):Array<Array<String>>
+	{
+		var fullText:String = openfl.Assets.getText(path);
+
+		var firstArray:Array<String> = fullText.split('\n');
+		var swagOffsets:Array<Array<String>> = [];
+
+		for (i in firstArray)
+			swagOffsets.push(i.split(' '));
+
+		return swagOffsets;
 	}
 
 	function flipLeftRight():Void
