@@ -1,7 +1,6 @@
 package gameObjects.shaders;
 
 import flixel.graphics.tile.FlxGraphicsShader;
-import flixel.util.FlxTimer;
 import openfl.Assets;
 import scripting.HScript;
 import sys.io.File;
