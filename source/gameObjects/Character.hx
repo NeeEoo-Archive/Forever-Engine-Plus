@@ -496,37 +496,7 @@ class Character extends FNFSprite
 				playAnim('idle');
 				characterData.healthIcon = 'parents';
 				characterData.healthbarColor = FlxColor.fromRGB(196, 94, 174);
-			default:
-				// set up animations if they aren't already
-
-				// fyi if you're reading this this isn't meant to be well made, it's kind of an afterthought I wanted to mess with and
-				// I'm probably not gonna clean it up and make it an actual feature of the engine I just wanted to play other people's mods but not add their files to
-				// the engine because that'd be stealing assets
-				var fileNew = curCharacter + 'Anims';
-				if (OpenFlAssets.exists(Paths.offsetTxt(fileNew)))
-				{
-					var characterAnims:Array<String> = CoolUtil.coolTextFile(Paths.offsetTxt(fileNew));
-					var characterName:String = characterAnims[0].trim();
-					frames = Paths.getSparrowAtlas('characters/$characterName');
-					for (i in 1...characterAnims.length)
-					{
-						var getterArray:Array<Array<String>> = CoolUtil.getAnimsFromTxt(Paths.offsetTxt(fileNew));
-						animation.addByPrefix(getterArray[i][0], getterArray[i][1].trim(), 24, false);
-					}
-				}
-				else
-					return setCharacter(x, y, 'bf');
-		}
-
-		// set up offsets cus why not
-		if (OpenFlAssets.exists(Paths.offsetTxt(curCharacter + 'Offsets')))
-		{
-			var characterOffsets:Array<String> = CoolUtil.coolTextFile(Paths.offsetTxt(curCharacter + 'Offsets'));
-			for (i in 0...characterOffsets.length)
-			{
-				var getterArray:Array<Array<String>> = CoolUtil.getOffsetsFromTxt(Paths.offsetTxt(curCharacter + 'Offsets'));
-				addOffset(getterArray[i][0], Std.parseInt(getterArray[i][1]), Std.parseInt(getterArray[i][2]));
-			}
+			default: return setCharacter(x, y, 'bf');
 		}
 
 		dance();

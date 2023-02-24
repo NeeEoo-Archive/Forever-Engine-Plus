@@ -46,19 +46,6 @@ class CoolUtil
 		return daList;
 	}
 
-	public static function getOffsetsFromTxt(path:String):Array<Array<String>>
-	{
-		var fullText:String = Assets.getText(path);
-
-		var firstArray:Array<String> = fullText.split('\n');
-		var swagOffsets:Array<Array<String>> = [];
-
-		for (i in firstArray)
-			swagOffsets.push(i.split(' '));
-
-		return swagOffsets;
-	}
-
 	public static function returnAssetsLibrary(library:String, ?subDir:String = 'assets/images'):Array<String>
 	{
 		var libraryArray:Array<String> = [];
@@ -77,21 +64,6 @@ class CoolUtil
 		return libraryArray;
 	}
 
-	public static function getAnimsFromTxt(path:String):Array<Array<String>>
-	{
-		var fullText:String = Assets.getText(path);
-
-		var firstArray:Array<String> = fullText.split('\n');
-		var swagOffsets:Array<Array<String>> = [];
-
-		for (i in firstArray)
-		{
-			swagOffsets.push(i.split('--'));
-		}
-
-		return swagOffsets;
-	}
-
 	public static function numberArray(max:Int, ?min = 0):Array<Int>
 	{
 		var dumbArray:Array<Int> = [];
@@ -100,5 +72,14 @@ class CoolUtil
 			dumbArray.push(i);
 		}
 		return dumbArray;
+	}
+
+	public static function browserLoad(site:String)
+	{
+		#if linux
+		Sys.command('/usr/bin/xdg-open', [site]);
+		#else
+		flixel.FlxG.openURL(site);
+		#end
 	}
 }

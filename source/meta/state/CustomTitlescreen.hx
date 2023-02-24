@@ -157,9 +157,9 @@ class CustomTitlescreen extends MusicBeatState
 	function getIntroTextShit():Array<Array<String>>
 	{
 		var swagGoodArray:Array<Array<String>> = [['no idea what psych engine is', 'vine boom sfx']];
-		if (Assets.exists(Paths.txt('introText')))
+		if (Assets.exists(Paths.data('introText.txt')))
 		{
-			var fullText:String = Assets.getText(Paths.txt('introText'));
+			var fullText:String = Assets.getText(Paths.data('introText.txt'));
 			var firstArray:Array<String> = fullText.split('\n');
 
 			for (i in firstArray)

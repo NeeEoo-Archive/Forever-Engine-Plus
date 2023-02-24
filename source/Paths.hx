@@ -238,19 +238,9 @@ class Paths
 		return getPath(file, type, library);
 	}
 
-	inline static public function txt(key:String, ?library:String)
-	{
-		return getPath('$key.txt', TEXT, library);
-	}
-
 	inline static public function data(key:String, ?library:String)
 	{
 		return getPath('data/$key', TEXT, library);
-	}
-
-	inline static public function jsonShader(key:String, ?library:String)
-	{
-		return getPath('data/shaders/$key.json', TEXT, library);
 	}
 
 	inline static public function shaderFragment(key:String, ?library:String)
@@ -266,11 +256,6 @@ class Paths
 	inline static public function xml(key:String, ?library:String)
 	{
 		return getPath('data/$key.xml', TEXT, library);
-	}
-
-	inline static public function offsetTxt(key:String, ?library:String)
-	{
-		return getPath('images/characters/$key.txt', TEXT, library);
 	}
 
 	inline static public function json(key:String, ?library:String)

@@ -131,35 +131,4 @@ class GraphicsShader extends Shader
 			}
 		}
 	}
-
-	/**
-	 * Modify a parameter of the shader.
-	 * @param name The name of the parameter to modify.
-	 * @param value The new value to use.
-	 */
-	public function setVariable(name:String, value:Dynamic):Void
-	{
-		var prop:ShaderParameter<Dynamic> = Reflect.field(this.data, name);
-		if (prop == null)
-		{
-			trace('[WARN] Shader property ${name} not found.');
-			return;
-		}
-		prop.value = [value];
-	}
-
-	/**
-	 * Retrieve a boolean array parameter of the shader.
-	 * @param name The name of the parameter to retrieve.
-	 */
-	public function getVariable(name:String):Null<Array<Dynamic>>
-	{
-		var prop:ShaderParameter<Dynamic> = Reflect.field(this.data, name);
-		if (prop == null)
-		{
-			trace('[WARN] Shader array property ${name} not found.');
-			return null;
-		}
-		return prop.value;
-	}
 }
