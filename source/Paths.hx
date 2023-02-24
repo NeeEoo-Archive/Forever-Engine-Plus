@@ -266,6 +266,9 @@ class Paths
 	inline static public function songJson(song:String, secondSong:String, ?library:String)
 		return getPath('songs/${song.toLowerCase()}/${secondSong.toLowerCase()}.json', TEXT, library);
 
+	inline static public function songData(song:String, file:String, ?library:String)
+		return getPath('songs/${song.toLowerCase()}/${file.toLowerCase()}', TEXT, library);
+
 	static public function sound(key:String, ?library:String):Dynamic
 	{
 		var sound:Sound = returnSound('sounds', key, library);
