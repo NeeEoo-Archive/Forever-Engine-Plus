@@ -1874,16 +1874,20 @@ class PlayState extends MusicBeatState
 		{
 			#if VIDEOS_ALLOWED
 			inCutscene = true;
+			var hasStartCutscene:Bool = false;
 			var video = new VideoHandler();
 			coolScript.set("playCutscene", function(file:String) {
+				hasStartCutscene = true;
 				video.playVideo(Paths.video(file));
 				video.finishCallback = startCountdown;
 			});
 			coolScript.set("setEndCutscene", function(file:String) {
 				endCutscene = file;
+				if(!hasStartCutscene) startCountdown();
 			});
 			if(coolScript.exists("loadCutscenes"))
 				coolScript.call("loadCutscenes");
+			else startCountdown();
 			#else
 			startCountdown();
 			#end
