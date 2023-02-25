@@ -1,21 +1,15 @@
 package gameObjects.userInterface;
 
 import flixel.FlxBasic;
-import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
-import flixel.util.FlxTimer;
+import flixel.util.FlxStringUtil;
 import meta.CoolUtil;
 import meta.data.Conductor;
 import meta.data.Timings;
@@ -32,14 +26,21 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	// fnf mods
 	var scoreDisplay:String = 'beep bop bo skdkdkdbebedeoop brrapadop';
 
+	public var centerMark:FlxText; // song display name and difficulty at the center
 	var cornerMark:FlxText; // engine mark at the upper right corner
-	var centerMark:FlxText; // song display name and difficulty at the center
+	var centerMarkText:String;
 
 	public var autoplayMark:FlxText; // autoplay indicator at the center
 	public var autoplaySine:Float = 0;
 
 	private var healthBarBG:FlxSprite;
 	private var healthBar:FlxBar;
+
+	public var timeBarBG:FlxSprite;
+	public var timeBar:FlxBar;
+	var songPercent:Float = 0;
+	var curTime:Float = 0;
+	var daTime:Float = 0;
 
 	private var SONG = PlayState.SONG;
 
@@ -59,6 +60,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	{
 		// call the initializations and stuffs
 		super();
+		centerMarkText = '- ${infoDisplay + " [" + diffDisplay}] -';
 
 		// le healthbar setup
 		var barY = FlxG.height * 0.875;
@@ -98,14 +100,35 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		cornerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		cornerMark.setPosition(FlxG.width - (cornerMark.width + 5), 5);
 		cornerMark.antialiasing = true;
-		add(cornerMark);
 
-		centerMark = new FlxText(0, (Init.trueSettings.get('Downscroll') ? FlxG.height - 40 : 10), 0, '- ${infoDisplay + " [" + diffDisplay}] -');
+		centerMark = new FlxText(0, (Init.trueSettings.get('Downscroll') ? FlxG.height - 40 : 10), 0, '00:00 $centerMarkText 00:00');
 		centerMark.setFormat(Paths.font('vcr.ttf'), 24, FlxColor.WHITE);
 		centerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		centerMark.screenCenter(X);
 		centerMark.antialiasing = true;
+		centerMark.alpha = 0;
+		centerMark.visible = Init.trueSettings.get('Show Timebar');
+
+		timeBarBG = new FlxSprite(0, centerMark.y + (centerMark.height / 4)).loadGraphic(Paths.image('UI/timeBar'));
+		timeBarBG.setGraphicSize(Std.int(centerMark.width));
+		timeBarBG.updateHitbox();
+		timeBarBG.screenCenter(X);
+		timeBarBG.scrollFactor.set();
+		timeBarBG.color = FlxColor.BLACK;
+		timeBarBG.alpha = 0;
+		timeBarBG.visible = Init.trueSettings.get('Show Timebar');
+		add(timeBarBG);
+		
+		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this,
+			'daTime', 0, PlayState.songMusic.length);
+		timeBar.scrollFactor.set();
+		timeBar.createFilledBar(FlxColor.BLACK, FlxColor.WHITE);
+		timeBar.numDivisions = 400;
+		timeBar.alpha = 0;
+		timeBar.visible = Init.trueSettings.get('Show Timebar');
+		add(timeBar);
 		add(centerMark);
+		add(cornerMark);
 
 		// counter
 		if (Init.trueSettings.get('Counter') != 'None')
@@ -185,6 +208,30 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 			autoplaySine += 180 * (elapsed / 4);
 			autoplayMark.alpha = 1 - Math.sin((Math.PI * autoplaySine) / 80);
 		}
+
+		timeBar.update(elapsed);
+	}
+
+	public function updateTimebar()
+	{
+		var curTime = Conductor.songPosition - Init.trueSettings.get('Offset');
+		if(curTime < 0) curTime = 0;
+		songPercent = (curTime / PlayState.songLength);
+
+		var songCalc:Float = (PlayState.songLength - curTime);
+		songCalc = curTime;
+
+		var secondsTotal:Int = Math.floor(songCalc / 1000);
+		if(secondsTotal < 0) secondsTotal = 0;
+
+		daTime = PlayState.songMusic.time;
+
+		centerMark.text = FlxStringUtil.formatTime(secondsTotal, false)
+			+ ' '
+			+ centerMarkText
+			+ ' '
+			+ FlxStringUtil.formatTime(Math.floor(PlayState.songMusic.length / 1000));
+		centerMark.screenCenter(X);
 	}
 
 	private final divider:String = " • ";

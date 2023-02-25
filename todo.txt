@@ -1,5 +1,4 @@
 // ONLY SWORD CAN DO THESE
-timebar option (so ez)
 remove valid score from the song class (so ez)
 songs list in json (so ez)
 credits menu
@@ -11,3 +10,8 @@ softcoded modcharts
 custom notetypes
 custom events
 charting state rework
+
+editors:
+character offset editors
+shader editor? maybe
+modchart editor

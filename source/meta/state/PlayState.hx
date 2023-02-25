@@ -601,6 +601,8 @@ class PlayState extends MusicBeatState
 						// Conductor.songPosition += FlxG.elapsed * 1000;
 						// trace('MISSED FRAME');
 					}
+
+					uiHUD.updateTimebar();
 				}
 
 				// Conductor.lastSongPos = FlxG.sound.music.time;
@@ -1426,6 +1428,9 @@ class PlayState extends MusicBeatState
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
+		for(object in [uiHUD.timeBar, uiHUD.timeBarBG, uiHUD.centerMark])
+			FlxTween.tween(object, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
+
 		if (!paused)
 		{
 			songMusic.play();
@@ -1657,9 +1662,7 @@ class PlayState extends MusicBeatState
 	/*
 		Extra functions and stuffs
 	 */
-	/// song end function at the end of the playstate lmao ironic I guess
 	private var endSongEvent:Bool = false;
-
 	function endSong():Void
 	{
 		canPause = false;

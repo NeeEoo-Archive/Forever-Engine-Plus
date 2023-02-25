@@ -171,6 +171,12 @@ class Init extends FlxState
 			"Simplifies the judgement animations, displaying only one judgement / rating sprite at a time.",
 			NOT_FORCED
 		],
+		'Show Timebar' => [
+			true,
+			Checkmark,
+			"Wheter to show the timebar.",
+			NOT_FORCED
+		]
 	];
 
 	public static var trueSettings:Map<String, Dynamic> = [];
