@@ -5,7 +5,6 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.FlxSubState;
 import flixel.addons.effects.FlxTrail;
 import flixel.addons.transition.FlxTransitionableState;
@@ -33,19 +32,19 @@ import meta.data.Song.SwagSong;
 import meta.state.charting.*;
 import meta.state.menus.*;
 import meta.subState.*;
-import openfl.display.GraphicsShader;
 import openfl.events.KeyboardEvent;
-import openfl.filters.ShaderFilter;
-import openfl.media.Sound;
-import openfl.utils.Assets;
 import scripting.HScript;
-import sys.io.File;
 
 using StringTools;
 
 #if desktop
 import meta.data.dependency.Discord;
 #end
+
+#if VIDEOS_ALLOWED
+import hxcodec.VideoHandler;
+#end
+
 
 class PlayState extends MusicBeatState
 {
@@ -106,7 +105,7 @@ class PlayState extends MusicBeatState
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
 	var inCutscene:Bool = false;
-
+	var endCutscene:String = "";
 	var canPause:Bool = true;
 
 	var previousFrameTime:Int = 0;
@@ -155,6 +154,8 @@ class PlayState extends MusicBeatState
 	// stores the last combo objects in an array
 	public static var lastCombo:Array<FlxSprite>;
 
+	var coolScript:HScript;
+
 	function resetStatics()
 	{
 		// reset any values and variables that are static
@@ -164,15 +165,13 @@ class PlayState extends MusicBeatState
 		misses = 0;
 		// sets up the combo object array
 		lastCombo = [];
-
 		defaultCamZoom = 1.05;
 		cameraSpeed = 1;
 		forceZoom = [0, 0, 0, 0];
-
+		endCutscene = "";
 		assetModifier = 'base';
 		changeableSkin = 'default';
-
-		PlayState.SONG.validScore = true;
+		SONG.validScore = true;
 	}
 
 	// at the beginning of the playstate
@@ -363,6 +362,20 @@ class PlayState extends MusicBeatState
 
 		Paths.clearUnusedMemory();
 
+		coolScript = new HScript(Paths.songScript(curSong.toLowerCase().replace(" ", "-"), "script.hxs"));
+		coolScript.set("bf", boyfriend);
+		coolScript.set("dad", dadOpponent);
+		coolScript.set("gf", gf);
+		coolScript.set("camGame", camGame);
+		coolScript.set("camHUD", camHUD);
+		coolScript.set("camDadStrums", strumHUD[0]);
+		coolScript.set("camBfStrums", strumHUD[1]);
+		coolScript.set("addShader", function(shader:String, applyArray:Array<FlxBasic>) {
+			shaders.addShader(shader, applyArray);
+		});
+		if(coolScript.exists("onCreate"))
+			coolScript.call("onCreate");
+		
 		// call the funny intro cutscene depending on the song
 		if (!skipCutscenes())
 			songIntroCutscene();
@@ -373,19 +386,6 @@ class PlayState extends MusicBeatState
 		 * To test the shader handler, you can uncomment this code to apply the effect.
 		 */
 		//shaders.addShader('chromatic aberration', [camGame]);
-
-		var script = new HScript(Paths.songScript(curSong.toLowerCase().replace(" ", "-"), "shaders.hxs"));
-		script.set("bf", boyfriend);
-		script.set("dad", dadOpponent);
-		script.set("gf", gf);
-		script.set("camGame", camGame);
-		script.set("camHUD", camHUD);
-		script.set("camDadStrums", strumHUD[0]);
-		script.set("camBfStrums", strumHUD[1]);
-		script.set("addShader", function(shader:String, applyArray:Array<FlxBasic>){
-			shaders.addShader(shader, applyArray);
-		});
-		script.call("onCreate");
 	}
 
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>
@@ -1432,7 +1432,7 @@ class PlayState extends MusicBeatState
 			songMusic.onComplete = endSong;
 			vocals.play();
 
-			resyncVocals();
+			//resyncVocals();
 
 			#if desktop
 			// Song duration in a float, useful for the time left feature
@@ -1487,14 +1487,14 @@ class PlayState extends MusicBeatState
 	function sortByShit(Obj1:Note, Obj2:Note):Int
 		return FlxSort.byValues(FlxSort.ASCENDING, Obj1.strumTime, Obj2.strumTime);
 
-	function resyncVocals():Void
+	function resyncVocals(resyncInst:Bool = false):Void
 	{
 		trace('resyncing vocal time ${vocals.time}');
-		songMusic.pause();
+		if(resyncInst) songMusic.pause();
 		vocals.pause();
 		Conductor.songPosition = songMusic.time;
 		vocals.time = Conductor.songPosition;
-		songMusic.play();
+		if(resyncInst) songMusic.play();
 		vocals.play();
 		trace('new vocal time ${Conductor.songPosition}');
 	}
@@ -1503,7 +1503,11 @@ class PlayState extends MusicBeatState
 	{
 		super.stepHit();
 		///*
-		if (songMusic.time >= Conductor.songPosition + 20 || songMusic.time <= Conductor.songPosition - 20)
+		/*if (songMusic.time >= Conductor.songPosition + 20 || songMusic.time <= Conductor.songPosition - 20)
+			resyncVocals();*/
+		if (songMusic != null
+			&& Math.abs(songMusic.time - Conductor.songPosition) > 20
+			|| (SONG.needsVoices && vocals != null && Math.abs(vocals.time - Conductor.songPosition) > 20))
 			resyncVocals();
 		//*/
 	}
@@ -1623,7 +1627,7 @@ class PlayState extends MusicBeatState
 		if (paused)
 		{
 			if (songMusic != null && !startingSong)
-				resyncVocals();
+				resyncVocals(paused);
 
 			// resume all tweens and timers
 			FlxTimer.globalManager.forEach(function(tmr:FlxTimer)
@@ -1666,42 +1670,21 @@ class PlayState extends MusicBeatState
 
 		deaths = 0;
 
-		if (!isStoryMode)
+		#if VIDEOS_ALLOWED
+		if(!skipCutscenes() && endCutscene != "")
 		{
-			Main.switchState(this, new FreeplayState());
+			var video = new VideoHandler();
+			video.playVideo(Paths.video(endCutscene));
+			video.openingCallback = function() { //hiding the game lmfao
+				add(new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK));
+				for(ui in allUIs) ui.visible = false;
+			};
+			video.finishCallback = goBack;
 		}
-		else
-		{
-			// set the campaign's score higher
-			campaignScore += songScore;
-
-			// remove a song from the story playlist
-			storyPlaylist.remove(storyPlaylist[0]);
-
-			// check if there aren't any songs left
-			if ((storyPlaylist.length <= 0) && (!endSongEvent))
-			{
-				// play menu music
-				ForeverTools.resetMenuMusic();
-
-				// set up transitions
-				transIn = FlxTransitionableState.defaultTransIn;
-				transOut = FlxTransitionableState.defaultTransOut;
-
-				// change to the menu state
-				Main.switchState(this, new StoryMenuState());
-
-				// save the week's score if the score is valid
-				if (SONG.validScore)
-					Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
-
-				// flush the save
-				FlxG.save.flush();
-			}
-			else
-				songEndSpecificActions();
-		}
-		//
+		else goBack();
+		#else
+		goBack();
+		#end
 	}
 
 	private function songEndSpecificActions()
@@ -1743,6 +1726,46 @@ class PlayState extends MusicBeatState
 
 		// deliberately did not use the main.switchstate as to not unload the assets
 		FlxG.switchState(new PlayState());
+	}
+
+	private function goBack()
+	{
+		if (!isStoryMode)
+		{
+			Main.switchState(this, new FreeplayState());
+		}
+		else
+		{
+			// set the campaign's score higher
+			campaignScore += songScore;
+
+			// remove a song from the story playlist
+			storyPlaylist.remove(storyPlaylist[0]);
+
+			// check if there aren't any songs left
+			if ((storyPlaylist.length <= 0) && (!endSongEvent))
+			{
+				// play menu music
+				ForeverTools.resetMenuMusic();
+
+				// set up transitions
+				transIn = FlxTransitionableState.defaultTransIn;
+				transOut = FlxTransitionableState.defaultTransOut;
+
+				// change to the menu state
+				Main.switchState(this, new StoryMenuState());
+
+				// save the week's score if the score is valid
+				if (SONG.validScore)
+					Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
+
+				// flush the save
+				FlxG.save.flush();
+			}
+			else
+				songEndSpecificActions();
+		}
+		//
 	}
 
 	var dialogueBox:DialogueBox;
@@ -1848,7 +1871,23 @@ class PlayState extends MusicBeatState
 			add(dialogueBox);
 		}
 		else
+		{
+			#if VIDEOS_ALLOWED
+			inCutscene = true;
+			var video = new VideoHandler();
+			coolScript.set("playCutscene", function(file:String) {
+				video.playVideo(Paths.video(file));
+				video.finishCallback = startCountdown;
+			});
+			coolScript.set("setEndCutscene", function(file:String) {
+				endCutscene = file;
+			});
+			if(coolScript.exists("loadCutscenes"))
+				coolScript.call("loadCutscenes");
+			#else
 			startCountdown();
+			#end
+		}
 	}
 
 	public static function skipCutscenes():Bool
@@ -1970,7 +2009,6 @@ class PlayState extends MusicBeatState
 			}
 
 			swagCounter += 1;
-			// generateSong('fresh');
 		}, 5);
 	}
 

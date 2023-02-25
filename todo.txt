@@ -1,8 +1,6 @@
 // ONLY SWORD CAN DO THESE
-cutscenes support (so ez)
 timebar option (so ez)
 remove valid score from the song class (so ez)
-fix resync vocals bug (so ez)
 songs list in json (so ez)
 make a good readme with an actual logo lol
 discord rpc update
@@ -10,6 +8,8 @@ credits menu
 softcoded stages
 playstate changeables (playback speed, practice mode etc)
 softcoded modcharts
+
+// uuhm someone to help sword pls <:)
 custom notetypes
 custom events
 charting state rework

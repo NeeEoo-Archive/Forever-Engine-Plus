@@ -29,6 +29,7 @@
 	<!-- _____________________________ Custom Defines ____________________________ -->
 
 	<define name="DISCORD_RPC" if="desktop" unless="web || neko" />
+	<define name="VIDEOS_ALLOWED" if="desktop || android"/>
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
@@ -46,20 +47,22 @@
 	<assets path="assets" />
 	<assets path="assets/songs" />
 	<assets path="assets/music" preload="true" />
+	<assets path="assets/videos" preload="true" if="VIDEOS_ALLOWED"/>
 	<assets path="FE-CrashDialog.exe" type="template" if="windows release" />
-
-	<!--<assets path="mods" />-->
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxedev set='webgl' if="html5" />
+	<!-- Show debug traces for hxCodec -->
+    <haxedef name="HXC_DEBUG_TRACE" if="debug" />
 
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-ui" />
 	<haxelib name="discord_rpc" if="DISCORD_RPC" />
-	<haxelib name="hxcpp-debug-server" if="debug" />
+	<!--haxelib name="hxcpp-debug-server" if="debug" />-->
 	<haxelib name="hscript-improved" />
+	<haxelib name="hxCodec" if="VIDEOS_ALLOWED" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

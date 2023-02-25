@@ -239,6 +239,12 @@ class Paths
 		return getPath(file, type, library);
 	}
 
+	inline static public function video(file:String)
+	{
+		return 'assets/videos/$file';
+	}
+
+
 	inline static public function data(key:String, ?library:String)
 	{
 		return getPath('data/$key', TEXT, library);

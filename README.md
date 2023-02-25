@@ -1,29 +1,17 @@
 <p align="center">
-  <img src="https://media.discordapp.net/attachments/916918345255751690/930068118938730526/legacy.png" width="750"/></a>
-  <h1 align="center">Forever Engine Legacy</h1>
-  <h2 align="center">An open-source, quality of life and performance driven Friday Night Funkin' mod engine!</h2>
+  <img src="https://cdn.discordapp.com/attachments/1035465417088565278/1078928407456391188/Untitled-5.png" width="750"/></a>
+  <h1 align="center">Forever Engine Plus</h1>
+  <h2 align="center">An open-source, quality of life and performance driven modified Forever Engine Legacy Fork</h2>
 </p>
 
 ----------------------------------------------
-Forever Engine is currently in *legacy* state as it is being rewritten. 
-
-The legacy version of Forever Engine lacks accessibility and cohesion, something we are currently working to fix with the more newer and updated rewrite.
-
 **FOREVER ENGINE LEGACY IS ONLY MEANT TO BE USED ON DESKTOP! I AM NOT RESPONSIBLE FOR CRASHES/PROBLEMS WITH HTML5, NOR AM I RESPONSIBLE FOR MAINTAINING HTML5.**
-
 ----------------------------------------------
 # Features:
-* Noteskins;
-* Custom UIs;
-* Options Menu with FPS Capping and Adjustments;
-* A lot of modularity and freedom with options
-    * (Hopefully in the future *everything* will be toggleable);
-* A restructure/partial remake of the base game's codebase;
-* ``source/`` folder abstraction;
-* More streamlined code
-    * (only having to set things in one place).
-
-AND MORE!
+* Forever Engine Legacy's features,
+* A scripting system for writing scripts outside the source code,
+* A custom runtime shaders support with scripting,
+* Custom events, custom notetypes... AND MORE!
 
 ----------------------------------------------
 # Credits:

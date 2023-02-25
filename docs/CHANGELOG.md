@@ -5,15 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 Originally used by [ninjamuffin99](https://github.com/ninjamuffin99) in the [original Funkin' repo](https://github.com/ninjamuffin99/Funkin/blob/master/CHANGELOG.md).
 
-## [0.3.1]
-- Changed UI to resemble Forever Engine Rewrite's UI (it's just better).
-
-## [0.3]
-- Rewritten Hold Notes;
-- BPM Changes
-    - (credit to [nebulazorua](https://github.com/nebulazorua));
-- Rewritten Inputs
-    - (Thanks to [ShadowMario](https://github.com/ShadowMario) for letting me borrow some of your scripts, it was more of an afterthought tbh);
-- Better Camera Movement
-    - (Heavily based on [Vs. Sonic.Exe](https://gamebanana.com/mods/316022));
-- Just generally stability and changes to make sure Legacy is at the very least not broken before moving onto 1.0.
+## [0.1.0]
+- Expanded characters with custom icons, healthbar colors etc
+- Added HScript support thanks to my friend Leather128
+- Added runtime shaders support with scripting
+- Added a script for songs on PlayState (script.hxs) to add shaders, set cutscenes etc
