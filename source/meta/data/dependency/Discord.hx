@@ -7,7 +7,7 @@ import lime.app.Application;
 
 /**
 	Discord Rich Presence, both heavily based on Izzy Engine and the base game's, as well as with a lot of help 
-	from the creator of izzy engine because I'm dummy and dont know how to program discord
+	from the creator of izzy engine because yoshubs is dummy and dont know how to program discord
 **/
 class Discord
 {
@@ -16,7 +16,7 @@ class Discord
 	public static function initializeRPC()
 	{
 		DiscordRpc.start({
-			clientID: "1031181637863620708",
+			clientID: "1078971740237086750",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
@@ -32,8 +32,8 @@ class Discord
 		DiscordRpc.presence({
 			details: "",
 			state: null,
-			largeImageKey: 'fel-logo',
-			largeImageText: "Forever Engine Legacy"
+			largeImageKey: 'logo',
+			largeImageText: "Forever Engine Plus"
 		});
 	}
 
@@ -59,8 +59,8 @@ class Discord
 		DiscordRpc.presence({
 			details: details,
 			state: state,
-			largeImageKey: 'fel-logo',
-			largeImageText: "Forever Engine Legacy",
+			largeImageKey: 'logo',
+			largeImageText: "Forever Engine Plus",
 			smallImageKey: smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp: Std.int(startTimestamp / 1000),
