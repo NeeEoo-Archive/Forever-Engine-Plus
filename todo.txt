@@ -1,5 +1,4 @@
 // ONLY SWORD CAN DO THESE
-remove valid score from the song class (so ez)
 songs list in json (so ez)
 credits menu
 softcoded stages
@@ -12,6 +11,5 @@ custom events
 charting state rework
 
 editors:
-character offset editors
 shader editor? maybe
 modchart editor

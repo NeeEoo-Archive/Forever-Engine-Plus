@@ -1,4 +1,4 @@
-package scripting;
+package base.scripting;
 
 /**
  * Class to hold some of the custom "classes" from HScript's default variables.

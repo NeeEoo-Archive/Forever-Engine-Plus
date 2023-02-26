@@ -1,8 +1,8 @@
 package gameObjects.shaders;
 
+import base.scripting.HScript;
 import flixel.graphics.tile.FlxGraphicsShader;
 import openfl.Assets;
-import scripting.HScript;
 import sys.io.File;
 
 /**

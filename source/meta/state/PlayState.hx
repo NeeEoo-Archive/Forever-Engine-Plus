@@ -1,5 +1,7 @@
 package meta.state;
 
+import base.scripting.HScript;
+import base.scripting.ModchartScript;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -37,8 +39,6 @@ import modcharting.ModchartFuncs;
 import modcharting.NoteMovement;
 import modcharting.PlayfieldRenderer;
 import openfl.events.KeyboardEvent;
-import scripting.HScript;
-import scripting.ModchartScript;
 
 using StringTools;
 
@@ -66,6 +66,7 @@ class PlayState extends MusicBeatState
 	public static var vocals:FlxSound;
 
 	public static var campaignScore:Int = 0;
+	var validScore:Bool = true;
 
 	public static var dadOpponent:Character;
 	public static var gf:Character;
@@ -181,7 +182,7 @@ class PlayState extends MusicBeatState
 		endCutscene = "";
 		assetModifier = 'base';
 		changeableSkin = 'default';
-		SONG.validScore = true;
+		validScore = true;
 	}
 
 	// at the beginning of the playstate
@@ -341,7 +342,6 @@ class PlayState extends MusicBeatState
 		for(note in dadStrums.allNotes) notes.add(note);
 
 		playfieldRenderer = new PlayfieldRenderer(allStrumNotes, notes, this);
-		playfieldRenderer.cameras = [camHUD];
 		boyfriendStrums.splashNotes.kill();
 		dadStrums.splashNotes.kill();
 		add(playfieldRenderer);
@@ -365,6 +365,7 @@ class PlayState extends MusicBeatState
 			strumLines.members[i].cameras = [strumHUD[i]];
 		}
 		add(strumLines);
+		playfieldRenderer.cameras = [strumHUD[0], strumHUD[1]];
 
 		uiHUD = new ClassHUD();
 		add(uiHUD);
@@ -613,7 +614,7 @@ class PlayState extends MusicBeatState
 				{
 					boyfriendStrums.autoplay = !boyfriendStrums.autoplay;
 					uiHUD.autoplayMark.visible = boyfriendStrums.autoplay;
-					PlayState.SONG.validScore = false;
+					validScore = false;
 				}
 			}
 
@@ -1724,7 +1725,7 @@ class PlayState extends MusicBeatState
 		canPause = false;
 		songMusic.volume = 0;
 		vocals.volume = 0;
-		if (SONG.validScore)
+		if (validScore)
 			Highscore.saveScore(SONG.song, songScore, storyDifficulty);
 
 		deaths = 0;
@@ -1815,7 +1816,7 @@ class PlayState extends MusicBeatState
 				Main.switchState(this, new StoryMenuState());
 
 				// save the week's score if the score is valid
-				if (SONG.validScore)
+				if (validScore)
 					Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 
 				// flush the save

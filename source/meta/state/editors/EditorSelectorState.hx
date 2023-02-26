@@ -1,4 +1,4 @@
-package meta.state;
+package meta.state.editors;
 
 import flash.text.TextField;
 import flixel.FlxG;
@@ -27,7 +27,7 @@ using StringTools;
 
 class EditorSelectorState extends meta.MusicBeat.MusicBeatState
 {
-	var options:Array<String> = ["Modchart Editor", "Chart Editor"];
+	var options:Array<String> = ["Modchart Editor", "Character Offset Editor", "Chart Editor"];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	private var menuBG:FlxSprite;
@@ -50,8 +50,8 @@ class EditorSelectorState extends meta.MusicBeat.MusicBeatState
 		bg.antialiasing = !Init.trueSettings.get('Disable Antialiasing');
 		add(bg);
 
-        comingSoon = new FlxText(0, 0, 0, "Coming Soon").setFormat(Paths.font('vcr.ttf'), 24, FlxColor.RED);
-        comingSoon.screenCenter(X).y = 200; // funny trick
+        comingSoon = new FlxText(0, 0, 0, "Coming Soon...").setFormat(Paths.font('vcr.ttf'), 64, FlxColor.BLACK);
+        comingSoon.screenCenter(X).y = 50; // funny trick
         comingSoon.alpha = 0;
         add(comingSoon);
 
@@ -95,7 +95,6 @@ class EditorSelectorState extends meta.MusicBeat.MusicBeatState
 
 		if (controls.ACCEPT)
 		{
-            ForeverTools.killMusic([FlxG.sound.music]);
 			switch(options[curSelected])
 			{
 				case "Modchart Editor":
@@ -103,7 +102,12 @@ class EditorSelectorState extends meta.MusicBeat.MusicBeatState
                     FlxTween.cancelTweensOf(comingSoon);
                     comingSoon.alpha = 1;
                     FlxTween.tween(comingSoon, {alpha: 0}, 4, {startDelay: 2});
-				case "Chart Editor": Main.switchState(this, new meta.state.charting.OriginalChartingState());
+				case "Character Offset Editor":
+					ForeverTools.killMusic([FlxG.sound.music]);
+					Main.switchState(this, new meta.state.editors.CharacterOffset());
+				case "Chart Editor":
+					ForeverTools.killMusic([FlxG.sound.music]);
+					Main.switchState(this, new meta.state.charting.OriginalChartingState());
 			}
 		}
 	}

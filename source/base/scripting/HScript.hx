@@ -1,4 +1,4 @@
-package scripting;
+package base.scripting;
 
 import flixel.FlxG;
 import openfl.Assets;
