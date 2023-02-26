@@ -15,3 +15,4 @@ haxelib install hxcpp-debug-server
 haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
 haxelib git hxCodec https://github.com/polybiusproxy/hxCodec
 haxelib git hscript-improved https://github.com/YoshiCrafter29/hscript-improved
+haxelib git fnf-modcharting-tools https://github.com/TheZoroForce240/FNF-Modcharting-Tools

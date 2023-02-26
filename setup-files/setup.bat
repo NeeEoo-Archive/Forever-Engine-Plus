@@ -61,6 +61,9 @@ haxelib install hxcpp-debug-server
 echo Press any key to install hscript-improved.
 pause >nul
 haxelib git hscript-improved https://github.com/YoshiCrafter29/hscript-improved
+echo Press any key to install fnf-modcharting-tools.
+pause >nul
+haxelib git fnf-modcharting-tools https://github.com/TheZoroForce240/FNF-Modcharting-Tools
 TIMEOUT 4 >nul
 echo Press any key to continue with the installation of VSCommunity and its dependencies.
 pause >nul

@@ -32,8 +32,13 @@ import meta.data.Song.SwagSong;
 import meta.state.charting.*;
 import meta.state.menus.*;
 import meta.subState.*;
+import modcharting.ModchartFile;
+import modcharting.ModchartFuncs;
+import modcharting.NoteMovement;
+import modcharting.PlayfieldRenderer;
 import openfl.events.KeyboardEvent;
 import scripting.HScript;
+import scripting.ModchartScript;
 
 using StringTools;
 
@@ -74,7 +79,7 @@ class PlayState extends MusicBeatState
 	private var allSicks:Bool = true;
 
 	// if you ever wanna add more keys
-	private var numberOfKeys:Int = 4;
+	public static var numberOfKeys:Int = 4;
 
 	// get it cus release
 	// I'm funny just trust me
@@ -143,6 +148,8 @@ class PlayState extends MusicBeatState
 	// strumlines
 	public static var dadStrums:Strumline;
 	public static var boyfriendStrums:Strumline;
+	public var allStrumNotes:FlxTypedGroup<UIStaticArrow>;
+	public var notes:FlxTypedGroup<Note>;
 
 	public static var strumLines:FlxTypedGroup<Strumline>;
 	public static var strumHUD:Array<FlxCamera> = [];
@@ -154,11 +161,14 @@ class PlayState extends MusicBeatState
 	// stores the last combo objects in an array
 	public static var lastCombo:Array<FlxSprite>;
 
+	public static var instance:PlayState;
+	var modchartScripts:Map<String, ModchartScript>;
 	var coolScript:HScript;
 
 	function resetStatics()
 	{
 		// reset any values and variables that are static
+		instance = this;
 		songScore = 0;
 		combo = 0;
 		health = 1;
@@ -320,6 +330,26 @@ class PlayState extends MusicBeatState
 		strumLines.add(dadStrums);
 		strumLines.add(boyfriendStrums);
 
+		allStrumNotes = new FlxTypedGroup<UIStaticArrow>();
+		add(allStrumNotes);
+		notes = new FlxTypedGroup<Note>();
+		add(notes);
+
+		for(note in boyfriendStrums.receptors) allStrumNotes.add(note);
+		for(note in dadStrums.receptors) allStrumNotes.add(note);
+		for(note in boyfriendStrums.allNotes) notes.add(note);
+		for(note in dadStrums.allNotes) notes.add(note);
+
+		playfieldRenderer = new PlayfieldRenderer(allStrumNotes, notes, this);
+		playfieldRenderer.cameras = [camHUD];
+		boyfriendStrums.splashNotes.kill();
+		dadStrums.splashNotes.kill();
+		add(playfieldRenderer);
+		boyfriendStrums.splashNotes.revive();
+		dadStrums.splashNotes.revive();
+		
+		NoteMovement.getDefaultStrumPos(this);
+
 		// strumline camera setup
 		strumHUD = [];
 		for (i in 0...strumLines.length)
@@ -362,7 +392,10 @@ class PlayState extends MusicBeatState
 
 		Paths.clearUnusedMemory();
 
+		modchartScripts = new Map<String, ModchartScript>();
+
 		coolScript = new HScript(Paths.songScript(curSong.toLowerCase().replace(" ", "-"), "script.hxs"));
+		coolScript.set("game", instance);
 		coolScript.set("bf", boyfriend);
 		coolScript.set("dad", dadOpponent);
 		coolScript.set("gf", gf);
@@ -372,6 +405,11 @@ class PlayState extends MusicBeatState
 		coolScript.set("camBfStrums", strumHUD[1]);
 		coolScript.set("addShader", function(shader:String, applyArray:Array<FlxBasic>) {
 			shaders.addShader(shader, applyArray);
+		});
+		coolScript.set("loadModchart", function(file:String) {
+			var script = new ModchartScript(file);
+			if(script.exists("onCreate")) script.call("onCreate");
+			modchartScripts[file] = script;
 		});
 		if(coolScript.exists("onCreate"))
 			coolScript.call("onCreate");
@@ -520,6 +558,12 @@ class PlayState extends MusicBeatState
 		stageBuild.stageUpdateConstant(elapsed, boyfriend, gf, dadOpponent);
 
 		super.update(elapsed);
+
+		for(key => value in modchartScripts)
+		{
+			if(value.exists("onUpdate"))
+				value.call("onUpdate", [elapsed]);
+		}
 
 		if (health > 2)
 			health = 2;
@@ -1515,6 +1559,12 @@ class PlayState extends MusicBeatState
 			|| (SONG.needsVoices && vocals != null && Math.abs(vocals.time - Conductor.songPosition) > 20))
 			resyncVocals();
 		//*/
+
+		for (key => value in modchartScripts)
+		{
+			if (value.exists("onStep"))
+				value.call("onStep", [curStep]);
+		}
 	}
 
 	private function charactersDance(curBeat:Int)
@@ -1589,6 +1639,12 @@ class PlayState extends MusicBeatState
 			FlxG.camera.zoom += 0.015;
 			for (hud in allUIs)
 				hud.zoom += 0.03;
+		}
+
+		for (key => value in modchartScripts)
+		{
+			if (value.exists("onBeat"))
+				value.call("onBeat", [curBeat]);
 		}
 	}
 

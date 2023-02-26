@@ -18,7 +18,7 @@ import meta.data.dependency.FNFUIState;
 	I'm not going to change any of this because I don't truly understand how songplaying works, 
 	I mostly just wanted to rewrite the actual gameplay side of things.
  */
-class MusicBeatState extends FNFUIState
+class MusicBeatState extends modcharting.ModchartMusicBeatState
 {
 	// original variables extended from original game source
 	private var lastBeat:Float = 0;

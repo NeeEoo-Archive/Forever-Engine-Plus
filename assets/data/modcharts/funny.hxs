@@ -1,0 +1,4 @@
+function onCreate()
+{
+    addField(200, 200, 0);
+}

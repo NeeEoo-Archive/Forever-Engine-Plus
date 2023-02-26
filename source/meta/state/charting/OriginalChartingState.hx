@@ -113,17 +113,7 @@ class OriginalChartingState extends MusicBeatState
 			_song = PlayState.SONG;
 		else
 		{
-			/*
-				_song = {
-					song: 'Test',
-					notes: [],
-					bpm: 150,
-					needsVoices: true,
-					player1: 'bf',
-					player2: 'dad',
-					speed: 1,
-					validScore: false
-			};*/
+			_song = Song.loadFromJson("tutorial", "tutorial");
 		}
 
 		leftIcon = new HealthIcon(_song.player1);

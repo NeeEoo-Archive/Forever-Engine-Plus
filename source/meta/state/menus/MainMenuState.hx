@@ -258,6 +258,8 @@ class MainMenuState extends MusicBeatState
 		{
 			menuItem.screenCenter(X);
 		});
+
+		if(FlxG.keys.justPressed.SEVEN) Main.switchState(this, new meta.state.EditorSelectorState());
 	}
 
 	var lastCurSelected:Int = 0;

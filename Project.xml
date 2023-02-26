@@ -63,6 +63,8 @@
 	<!--haxelib name="hxcpp-debug-server" if="debug" />-->
 	<haxelib name="hscript-improved" />
 	<haxelib name="hxCodec" if="VIDEOS_ALLOWED" />
+    <define name="FOREVER_LEGACY" /> <!--For the fnf-modcharting-tools library-->
+    <haxelib name="fnf-modcharting-tools" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

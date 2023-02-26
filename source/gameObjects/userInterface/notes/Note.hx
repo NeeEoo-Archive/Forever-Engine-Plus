@@ -52,6 +52,10 @@ class Note extends FNFSprite
 	// it has come to this.
 	public var endHoldOffset:Float = Math.NEGATIVE_INFINITY;
 
+	// modchart shits
+	public var mesh:flixel.FlxStrip = null;
+	public var z:Float = 0;
+
 	public function new(strumTime:Float, noteData:Int, noteAlt:Float, ?prevNote:Note, ?sustainNote:Bool = false)
 	{
 		super(x, y);
