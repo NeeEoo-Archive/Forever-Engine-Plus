@@ -11,7 +11,6 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
 import meta.MusicBeat.MusicBeatState;
 import meta.data.dependency.Discord;
 
@@ -102,7 +101,10 @@ class MainMenuState extends MusicBeatState
 			menuItem.y = 8000;
 			canFollow = false;
 			camFollow.y += 75;
-			FlxTween.tween(menuItem, {y: 15 + (i * 175)}, 0.75, {ease: FlxEase.quartOut, onComplete: function (_) { canFollow = true; }});
+			FlxTween.tween(menuItem, {y: 15 + (i * 175)}, 0.75, {ease: FlxEase.quartOut, onComplete: function (_) {
+				canFollow = true;
+				updateSelection();
+			}});
 		}
 
 		// set the camera to actually follow the camera object that was created before
@@ -212,7 +214,7 @@ class MainMenuState extends MusicBeatState
 				}
 				else
 				{
-					new FlxTimer().start(0.8, function (_) {
+					new flixel.util.FlxTimer().start(0.8, function (_) {
 						switch (optionShit[Math.floor(curSelected)])
 						{
 							case 'story mode':

@@ -116,6 +116,7 @@ class CreditsState extends meta.MusicBeat.MusicBeatState
 
 		var color = creditBuds[curSelected].color;
 		mainColor = FlxColor.fromRGB(color[0], color[1], color[2]);
+        FlxTween.cancelTweensOf(bg);
 		FlxTween.color(bg, 0.35, bg.color, mainColor);
     }
 }

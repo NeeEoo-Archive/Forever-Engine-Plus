@@ -7,7 +7,7 @@ replace the week bgs on story mode
 add github as a social media credit
 setting shaders **script** variables
 
-// ONLY SWORD CAN DO THESE
+// things that Sword can do himself
 unlocking system for songs and weeks
 general scripts on assets/data/scripts that you can load on the song script
 softcoded stages
@@ -20,14 +20,12 @@ softcoded modcharts (assets/songs/da-song/modchart.json)
 custom notetypes
 custom events
 charting state rework
-
-editors:
 characters editor
 stages editor maybe
 dialogue editors (characters + the dialogue itself)
 shader editor? maybe idk cuz you can reload them by restarting a song i mean maybe like a shader hot reload state or smth
 modchart editor
 
-then...
-make a wiki when everything is done on this todo list
+then when everything is done...
+making a wiki when everything is done on this todo list
 and a discord server cuz why not

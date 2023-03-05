@@ -1,7 +1,6 @@
 package meta.state;
 
 import base.scripting.HScript;
-import base.scripting.ModchartScript;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -163,7 +162,7 @@ class PlayState extends MusicBeatState
 	public static var lastCombo:Array<FlxSprite>;
 
 	public static var instance:PlayState;
-	var modcharts:Map<String, ModchartScript>;
+	//var modcharts:Map<String, ModchartFile>;
 	var coolScript:HScript;
 
 	function resetStatics()
@@ -199,7 +198,7 @@ class PlayState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
-		// modcharts = new Map<String, ModchartScript>();
+		// modcharts = new Map<String, ModchartFile>();
 
 		// create the game camera
 		camGame = new FlxCamera();
@@ -419,8 +418,7 @@ class PlayState extends MusicBeatState
 		});*/
 
 		/*coolScript.set("loadModchart", function(file:String) {
-			var modchart = new ModchartScript(file);
-			modchart.create();
+			var modchart = new ModchartFile();
 			modcharts[file] = modchart;
 		});*/
 		if (coolScript.exists("onCreate"))
