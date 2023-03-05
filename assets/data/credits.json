@@ -1,0 +1,60 @@
+[
+    {
+        "name": "Engine Contributors",
+        "color": [50, 205, 50],
+        "isCategorie": true
+    },
+    {
+        "name": "Sword",
+        "substate_name": "Sword352",
+        "icon": "sword",
+        "description": "Engine Owner",
+        "expression": "coder nerd",
+        "color": [255, 0, 0],
+        "social_medias": [
+            {
+                "name": "gamebanana",
+                "value": "https://gamebanana.com/members/2323464"
+            },
+            {
+                "name": "discord",
+                "value": "Sword352#2198"
+            }
+        ],
+        "isCategorie": false
+    },
+    {
+        "name": "Leather",
+        "substate_name": "Leather128",
+        "icon": "leather",
+        "description": "HScript Support",
+        "expression": "professional dumbass",
+        "color": [238, 130, 238],
+        "social_medias": [
+            {
+                "name": "youtube",
+                "value": "https://www.youtube.com/channel/UCbCtO-ghipZessWaOBx8u1g"
+            },
+            {
+                "name": "twitter",
+                "value": "https://twitter.com/leather128"
+            }
+        ],
+        "isCategorie": false
+    },
+    {
+        "name": "Powerboy",
+        "substate_name": "Powerboy",
+        "icon": "powerboy",
+        "description": "Engine Artist",
+        "expression": "e",
+        "color": [255, 0, 0],
+        "social_medias": [
+            {
+                "name": "gamebanana",
+                "value": "https://gamebanana.com/members/2323464"
+            }
+        ],
+        "isCategorie": false
+    }
+]

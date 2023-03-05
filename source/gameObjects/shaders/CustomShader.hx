@@ -40,4 +40,10 @@ class CustomShader
 		if (script.exists("onBeat"))
 			script.call("onBeat", [curBeat]);
 	}
+
+	public function stepHit(curStep:Int)
+	{
+		if (script.exists("onStep"))
+			script.call("onStep", [curStep]);
+	}
 }

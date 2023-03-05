@@ -86,7 +86,7 @@ class Character extends FNFSprite
 				playAnim('danceRight');
 
 				characterData.healthIcon = 'gf';
-				characterData.healthbarColor = FlxColor.fromRGB(255, 0, 20);
+				characterData.healthbarColor = FlxColor.fromRGB(165, 0, 77);
 			case 'gf-christmas':
 				tex = Paths.getSparrowAtlas('characters/gfChristmas');
 				frames = tex;

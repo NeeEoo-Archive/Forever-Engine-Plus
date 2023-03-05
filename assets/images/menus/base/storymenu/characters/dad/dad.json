@@ -1,0 +1,9 @@
+{
+	"name": "Menu_Dad",
+	"anim": "M Dad Idle",
+	"confirmAnim": "M Dad Idle",
+	"fps": 24,
+	"scale": 0.95,
+	"offsets": [0, 0],
+	"flipX": false
+}

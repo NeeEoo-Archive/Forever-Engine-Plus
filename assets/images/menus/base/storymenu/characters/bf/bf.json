@@ -1,0 +1,9 @@
+{
+	"name": "Menu_BF",
+	"anim": "M BF Idle",
+	"confirmAnim": "M bf HEY",
+	"fps": 24,
+	"scale": 0.95,
+	"offsets": [0, 45],
+	"flipX": false
+}

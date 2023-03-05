@@ -163,7 +163,7 @@ class PlayState extends MusicBeatState
 	public static var lastCombo:Array<FlxSprite>;
 
 	public static var instance:PlayState;
-	var modchartScripts:Map<String, ModchartScript>;
+	var modcharts:Map<String, ModchartScript>;
 	var coolScript:HScript;
 
 	function resetStatics()
@@ -198,6 +198,8 @@ class PlayState extends MusicBeatState
 		resetMusic();
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
+
+		// modcharts = new Map<String, ModchartScript>();
 
 		// create the game camera
 		camGame = new FlxCamera();
@@ -331,7 +333,7 @@ class PlayState extends MusicBeatState
 		strumLines.add(dadStrums);
 		strumLines.add(boyfriendStrums);
 
-		allStrumNotes = new FlxTypedGroup<UIStaticArrow>();
+		/*allStrumNotes = new FlxTypedGroup<UIStaticArrow>();
 		add(allStrumNotes);
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
@@ -348,7 +350,7 @@ class PlayState extends MusicBeatState
 		boyfriendStrums.splashNotes.revive();
 		dadStrums.splashNotes.revive();
 		
-		NoteMovement.getDefaultStrumPos(this);
+		NoteMovement.getDefaultStrumPos(this);*/
 
 		// strumline camera setup
 		strumHUD = [];
@@ -365,7 +367,7 @@ class PlayState extends MusicBeatState
 			strumLines.members[i].cameras = [strumHUD[i]];
 		}
 		add(strumLines);
-		playfieldRenderer.cameras = [strumHUD[0], strumHUD[1]];
+		//playfieldRenderer.cameras = [strumHUD[0], strumHUD[1]];
 
 		uiHUD = new ClassHUD();
 		add(uiHUD);
@@ -393,8 +395,6 @@ class PlayState extends MusicBeatState
 
 		Paths.clearUnusedMemory();
 
-		modchartScripts = new Map<String, ModchartScript>();
-
 		coolScript = new HScript(Paths.songScript(curSong.toLowerCase().replace(" ", "-"), "script.hxs"));
 		coolScript.set("game", instance);
 		coolScript.set("bf", boyfriend);
@@ -404,15 +404,26 @@ class PlayState extends MusicBeatState
 		coolScript.set("camHUD", camHUD);
 		coolScript.set("camDadStrums", strumHUD[0]);
 		coolScript.set("camBfStrums", strumHUD[1]);
-		coolScript.set("addShader", function(shader:String, applyArray:Array<FlxBasic>) {
+		coolScript.set("addShader", function(shader:String, applyArray:Array<FlxBasic>)
+		{
 			shaders.addShader(shader, applyArray);
 		});
-		coolScript.set("loadModchart", function(file:String) {
-			var script = new ModchartScript(file);
-			if(script.exists("onCreate")) script.call("onCreate");
-			modchartScripts[file] = script;
-		});
-		if(coolScript.exists("onCreate"))
+		/*coolScript.set("setShaderScriptVariable", function(shader:String, variable:String, value:Float)
+		{
+			var daShader = shaders.shaders[shader];
+			if (daShader != null)
+			{
+				if (daShader.script.exists(variable))
+					daShader.script.set(variable, value);
+			}
+		});*/
+
+		/*coolScript.set("loadModchart", function(file:String) {
+			var modchart = new ModchartScript(file);
+			modchart.create();
+			modcharts[file] = modchart;
+		});*/
+		if (coolScript.exists("onCreate"))
 			coolScript.call("onCreate");
 		
 		// call the funny intro cutscene depending on the song
@@ -424,7 +435,7 @@ class PlayState extends MusicBeatState
 		/**
 		 * To test the shader handler, you can uncomment this code to apply the effect.
 		 */
-		//shaders.addShader('chromatic aberration', [camGame]);
+		//shaders.addShader('vcr', [camGame]);
 	}
 
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>
@@ -560,11 +571,8 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		for(key => value in modchartScripts)
-		{
-			if(value.exists("onUpdate"))
-				value.call("onUpdate", [elapsed]);
-		}
+		if (coolScript.exists("onUpdate"))
+			coolScript.call("onUpdate");
 
 		if (health > 2)
 			health = 2;
@@ -601,6 +609,7 @@ class PlayState extends MusicBeatState
 			if (!isStoryMode)
 			{
 				// charting state (more on that later)
+				#if debug
 				if ((FlxG.keys.justPressed.SEVEN) && (!startingSong))
 				{
 					resetMusic();
@@ -609,6 +618,7 @@ class PlayState extends MusicBeatState
 					else
 						Main.switchState(this, new OriginalChartingState());
 				}
+				#end
 
 				if ((FlxG.keys.justPressed.SIX))
 				{
@@ -765,6 +775,9 @@ class PlayState extends MusicBeatState
 
 			if (Init.trueSettings.get('Controller Mode'))
 				controllerInput();
+
+			if (coolScript.exists("onUpdatePost"))
+				coolScript.call("onUpdatePost");
 		}
 	}
 
@@ -857,7 +870,7 @@ class PlayState extends MusicBeatState
 								{
 									// set the end hold offset yeah I hate that I fix this like this
 									daNote.endHoldOffset = (daNote.prevNote.y - (daNote.y + daNote.height));
-									trace(daNote.endHoldOffset);
+									//trace(daNote.endHoldOffset);
 								}
 								else
 									daNote.y += daNote.endHoldOffset;
@@ -932,7 +945,7 @@ class PlayState extends MusicBeatState
 										var breakFromLate:Bool = false;
 										for (note in parentNote.childrenNotes)
 										{
-											trace('hold amount ${parentNote.childrenNotes.length}, note is late?' + note.tooLate + ', ' + breakFromLate);
+											//trace('hold amount ${parentNote.childrenNotes.length}, note is late?' + note.tooLate + ', ' + breakFromLate);
 											if (note.tooLate && !note.wasGoodHit)
 												breakFromLate = true;
 										}
@@ -1348,6 +1361,8 @@ class PlayState extends MusicBeatState
 			{
 				if (!cache)
 					numScore.cameras = [camHUD];
+				else
+					numScore.visible = false;
 				numScore.y += 50;
 			}
 			numScore.x += 100;
@@ -1457,6 +1472,7 @@ class PlayState extends MusicBeatState
 					Timings.smallestRating = daRating;
 			}
 		}
+		else rating.visible = false;
 	}
 
 	function healthCall(?ratingMultiplier:Float = 0)
@@ -1539,14 +1555,14 @@ class PlayState extends MusicBeatState
 
 	function resyncVocals(resyncInst:Bool = false):Void
 	{
-		trace('resyncing vocal time ${vocals.time}');
+		//trace('resyncing vocal time ${vocals.time}');
 		if(resyncInst) songMusic.pause();
 		vocals.pause();
 		Conductor.songPosition = songMusic.time;
 		vocals.time = Conductor.songPosition;
 		if(resyncInst) songMusic.play();
 		vocals.play();
-		trace('new vocal time ${Conductor.songPosition}');
+		//trace('new vocal time ${Conductor.songPosition}');
 	}
 
 	override function stepHit()
@@ -1561,11 +1577,8 @@ class PlayState extends MusicBeatState
 			resyncVocals();
 		//*/
 
-		for (key => value in modchartScripts)
-		{
-			if (value.exists("onStep"))
-				value.call("onStep", [curStep]);
-		}
+		if (coolScript.exists("onStep"))
+			coolScript.call("onStep");
 	}
 
 	private function charactersDance(curBeat:Int)
@@ -1586,6 +1599,9 @@ class PlayState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
+
+		if (coolScript.exists("onBeat"))
+			coolScript.call("onBeat");
 
 		if ((FlxG.camera.zoom < 1.35 && curBeat % 4 == 0) && (!Init.trueSettings.get('Reduced Movements')))
 		{
@@ -1640,12 +1656,6 @@ class PlayState extends MusicBeatState
 			FlxG.camera.zoom += 0.015;
 			for (hud in allUIs)
 				hud.zoom += 0.03;
-		}
-
-		for (key => value in modchartScripts)
-		{
-			if (value.exists("onBeat"))
-				value.call("onBeat", [curBeat]);
 		}
 	}
 

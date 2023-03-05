@@ -1,0 +1,9 @@
+{
+	"name": "Menu_Pico",
+	"anim": "M Pico Idle",
+	"confirmAnim": "M Pico Idle",
+	"fps": 24,
+	"scale": 1.2,
+	"offsets": [-25, 85],
+	"flipX": false
+}

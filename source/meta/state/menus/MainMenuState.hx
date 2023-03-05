@@ -11,6 +11,7 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 import meta.MusicBeat.MusicBeatState;
 import meta.data.dependency.Discord;
 
@@ -22,15 +23,14 @@ using StringTools;
 **/
 class MainMenuState extends MusicBeatState
 {
+	var optionShit:Array<String> = ['story mode', 'freeplay', "credits", 'options'];
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	var curSelected:Float = 0;
 
 	var bg:FlxSprite; // the background has been separated for more control
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
-
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'options'];
-	var canSnap:Array<Float> = [];
+	var canFollow:Bool = true;
 
 	// the create 'state'
 	override function create()
@@ -82,44 +82,27 @@ class MainMenuState extends MusicBeatState
 		add(menuItems);
 
 		// create the menu items themselves
-		var tex = Paths.getSparrowAtlas('menus/base/title/FNF_main_menu_assets');
+		var tex = Paths.getSparrowAtlas('menus/main/FNF_main_menu_assets');
 
 		// loop through the menu options
 		for (i in 0...optionShit.length)
 		{
-			var menuItem:FlxSprite = new FlxSprite(0, 80 + (i * 200));
-			menuItem.frames = tex;
-			// add the animations in a cool way (real
+			var menuItem:FlxSprite = new FlxSprite();
+			menuItem.frames = (optionShit[i] == "credits" ? Paths.getSparrowAtlas('menus/main/menu_credits') : tex);
+			// add the animations in a cool way (real)
 			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
 			menuItem.animation.play('idle');
-			canSnap[i] = -1;
-			// set the id
 			menuItem.ID = i;
-			// menuItem.alpha = 0;
-
-			// placements
 			menuItem.screenCenter(X);
-			// if the id is divisible by 2
-			if (menuItem.ID % 2 == 0)
-				menuItem.x += 1000;
-			else
-				menuItem.x -= 1000;
-
-			// actually add the item
 			menuItems.add(menuItem);
 			menuItem.scrollFactor.set();
 			menuItem.antialiasing = true;
 			menuItem.updateHitbox();
-
-			/*
-				FlxTween.tween(menuItem, {alpha: 1, x: ((FlxG.width / 2) - (menuItem.width / 2))}, 0.35, {
-					ease: FlxEase.smootherStepInOut,
-					onComplete: function(tween:FlxTween)
-					{
-						canSnap[i] = 0;
-					}
-			});*/
+			menuItem.y = 8000;
+			canFollow = false;
+			camFollow.y += 75;
+			FlxTween.tween(menuItem, {y: 15 + (i * 175)}, 0.75, {ease: FlxEase.quartOut, onComplete: function (_) { canFollow = true; }});
 		}
 
 		// set the camera to actually follow the camera object that was created before
@@ -213,7 +196,7 @@ class MainMenuState extends MusicBeatState
 			selectedSomethin = true;
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 
-			FlxFlicker.flicker(magenta, 0.8, 0.1, false);
+			if(Init.trueSettings.get('Flashing Lights')) FlxFlicker.flicker(magenta, 0.8, 0.1, false);
 
 			menuItems.forEach(function(spr:FlxSprite)
 			{
@@ -229,16 +212,15 @@ class MainMenuState extends MusicBeatState
 				}
 				else
 				{
-					FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
-					{
-						var daChoice:String = optionShit[Math.floor(curSelected)];
-
-						switch (daChoice)
+					new FlxTimer().start(0.8, function (_) {
+						switch (optionShit[Math.floor(curSelected)])
 						{
 							case 'story mode':
 								Main.switchState(this, new StoryMenuState());
 							case 'freeplay':
 								Main.switchState(this, new FreeplayState());
+							case 'credits':
+								Main.switchState(this, new meta.state.menus.CreditsState());
 							case 'options':
 								transIn = FlxTransitionableState.defaultTransIn;
 								transOut = FlxTransitionableState.defaultTransOut;
@@ -259,7 +241,9 @@ class MainMenuState extends MusicBeatState
 			menuItem.screenCenter(X);
 		});
 
+		#if debug
 		if(FlxG.keys.justPressed.SEVEN) Main.switchState(this, new meta.state.editors.EditorSelectorState());
+		#end
 	}
 
 	var lastCurSelected:Int = 0;
@@ -274,13 +258,13 @@ class MainMenuState extends MusicBeatState
 		});
 
 		// set the sprites and all of the current selection
-		camFollow.setPosition(menuItems.members[Math.floor(curSelected)].getGraphicMidpoint().x,
-			menuItems.members[Math.floor(curSelected)].getGraphicMidpoint().y);
+		var sprite = menuItems.members[Math.floor(curSelected)];
+		if(canFollow) camFollow.setPosition(sprite.getGraphicMidpoint().x, sprite.getGraphicMidpoint().y + (curSelected == 0 ? 55 : (curSelected == 3 ? -5 : 0)));
 
-		if (menuItems.members[Math.floor(curSelected)].animation.curAnim.name == 'idle')
-			menuItems.members[Math.floor(curSelected)].animation.play('selected');
+		if (sprite.animation.curAnim.name == 'idle')
+			sprite.animation.play('selected');
 
-		menuItems.members[Math.floor(curSelected)].updateHitbox();
+		sprite.updateHitbox();
 
 		lastCurSelected = Math.floor(curSelected);
 	}

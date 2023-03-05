@@ -1,0 +1,79 @@
+[
+    {
+        "songs": ["Tutorial"],
+        "icons": ["gf"],
+        "colors": [[200, 0, 77]],
+        "characters": ["NONE", "bf", "gf"],
+        "week_image": "tutorial",
+        "week_bg": "menu_stage",
+        "expression": "Funky Beginnings",
+        "hide_from_story": false,
+        "hide_from_freeplay": false
+    },
+    {
+        "songs": ["Bopeebo", "Fresh", "Dadbattle"],
+        "icons": ["dad", "dad", "dad"],
+        "colors": [[129, 100, 223], [129, 100, 223], [129, 100, 223]],
+        "characters": ["dad", "bf", "gf"],
+        "week_image": "week1",
+        "week_bg": "menu_stage",
+        "expression": "vs. DADDY DEAREST",
+        "hide_from_story": false,
+        "hide_from_freeplay": false
+    },
+    {
+        "songs": ["Spookeez", "South", "Monster"],
+        "icons": ["spooky", "spooky", "monster"],
+        "colors": [[30, 45, 60], [30, 45, 60], [0, 0, 24]],
+        "characters": ["spooky", "bf", "gf"],
+        "week_image": "week2",
+        "week_bg": "menu_halloween",
+        "expression": "Spooky Month",
+        "hide_from_story": false,
+        "hide_from_freeplay": false
+    },
+    {
+        "songs": ["Pico", "Philly-Nice", "Blammed"],
+        "icons": ["pico", "pico", "pico"],
+        "colors": [[152, 251, 152], [152, 251, 152], [152 ,251, 152]],
+        "characters": ["pico", "bf", "gf"],
+        "week_image": "week3",
+        "week_bg": "menu_philly",
+        "expression": "vs. Pico",
+        "hide_from_story": false,
+        "hide_from_freeplay": false
+    },
+    {
+        "songs": ["Satin-Panties", "High", "Milf"],
+        "icons": ["mom", "mom", "mom"],
+        "colors": [[203, 113, 170], [203, 113, 170], [203, 113, 170]],
+        "characters": ["mom", "bf", "gf"],
+        "week_image": "week4",
+        "week_bg": "menu_limo",
+        "expression": "MOMMY MUST MURDER",
+        "hide_from_story": false,
+        "hide_from_freeplay": false
+    },
+    {
+        "songs": ["Cocoa", "Eggnog", "Winter-Horrorland"],
+        "icons": ["parents-christmas", "parents-christmas", "monster-christmas"],
+        "colors": [[141, 165, 206], [141, 165, 206], [141, 165, 206]],
+        "characters": ["parents-christmas", "bf", "gf"],
+        "week_image": "week5",
+        "week_bg": "menu_christmas",
+        "expression": "RED SNOW",
+        "hide_from_story": false,
+        "hide_from_freeplay": false
+    },
+    {
+        "songs": ["Senpai", "Roses", "Thorns"],
+        "icons": ["senpai", "senpai", "spirit"],
+        "colors": [[206, 106, 169], [206, 106, 169], [206, 106, 169]],
+        "characters": ["senpai", "bf", "gf"],
+        "week_image": "week6",
+        "week_bg": "menu_school",
+        "expression": "hating simulator ft. moawling",
+        "hide_from_story": false,
+        "hide_from_freeplay": false
+    }
+]

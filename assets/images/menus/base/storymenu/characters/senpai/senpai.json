@@ -1,0 +1,9 @@
+{
+	"name": "Menu_Senpai",
+	"anim": "M Senpai Idle",
+	"confirmAnim": "M Senpai Idle",
+	"fps": 24,
+	"scale": 1,
+	"offsets": [-50, 50],
+	"flipX": false
+}

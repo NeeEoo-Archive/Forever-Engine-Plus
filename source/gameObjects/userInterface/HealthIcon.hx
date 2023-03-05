@@ -33,7 +33,7 @@ class HealthIcon extends FlxSprite
 				iconPath = trimmedCharacter;
 			else
 				iconPath = 'face';
-			trace('$char icon trying $iconPath instead you fuck');
+			trace('$char icon not found, trying $iconPath instead');
 		}
 
 		antialiasing = true;

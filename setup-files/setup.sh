@@ -5,7 +5,7 @@
 # you may also need to run "chmod +x setup" to mark this file as an executable
 haxelib install lime
 haxelib install openfl
-haxelib install flixel
+haxelib install flixel 5.1.0
 haxelib run lime setup flixel
 haxelib run lime setup
 haxelib install flixel-tools

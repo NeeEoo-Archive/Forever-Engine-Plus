@@ -49,11 +49,13 @@ class TitleState extends MusicBeatState
 	var curWacky:Array<String> = [];
 
 	var wackyImage:FlxSprite;
+	var flashingColor:FlxColor;
 
 	override public function create():Void
 	{
 		controls.setKeyboardScheme(None, false);
 		curWacky = FlxG.random.getObject(getIntroTextShit());
+		flashingColor = (Init.trueSettings.get('Flashing Lights') ? FlxColor.WHITE : 0xFF181515);
 		super.create();
 
 		startIntro();
@@ -203,7 +205,7 @@ class TitleState extends MusicBeatState
 		{
 			titleText.animation.play('press');
 
-			FlxG.camera.flash(FlxColor.WHITE, 1);
+			FlxG.camera.flash(flashingColor, 1);
 			FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 
 			transitioning = true;
@@ -347,7 +349,7 @@ class TitleState extends MusicBeatState
 		{
 			remove(ngSpr);
 
-			FlxG.camera.flash(FlxColor.WHITE, 4);
+			FlxG.camera.flash(flashingColor, 4);
 			remove(credGroup);
 			skippedIntro = true;
 		}

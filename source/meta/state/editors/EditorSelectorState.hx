@@ -31,9 +31,6 @@ class EditorSelectorState extends meta.MusicBeat.MusicBeatState
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	private var menuBG:FlxSprite;
-	var selectorLeft:Alphabet;
-	var selectorRight:Alphabet;
-    var comingSoon:FlxText;
 
 	override function create()
 	{
@@ -50,11 +47,6 @@ class EditorSelectorState extends meta.MusicBeat.MusicBeatState
 		bg.antialiasing = !Init.trueSettings.get('Disable Antialiasing');
 		add(bg);
 
-        comingSoon = new FlxText(0, 0, 0, "Coming Soon...").setFormat(Paths.font('vcr.ttf'), 64, FlxColor.BLACK);
-        comingSoon.screenCenter(X).y = 50; // funny trick
-        comingSoon.alpha = 0;
-        add(comingSoon);
-
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
@@ -65,11 +57,6 @@ class EditorSelectorState extends meta.MusicBeat.MusicBeatState
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
 			grpOptions.add(optionText);
 		}
-
-		selectorLeft = new Alphabet(0, 0, '>', true);
-		add(selectorLeft);
-		selectorRight = new Alphabet(0, 0, '<', true);
-		add(selectorRight);
 
 		changeSelection();
 	}
@@ -98,10 +85,8 @@ class EditorSelectorState extends meta.MusicBeat.MusicBeatState
 			switch(options[curSelected])
 			{
 				case "Modchart Editor":
-					FlxG.sound.play(Paths.sound('cancelMenu'));
-                    FlxTween.cancelTweensOf(comingSoon);
-                    comingSoon.alpha = 1;
-                    FlxTween.tween(comingSoon, {alpha: 0}, 4, {startDelay: 2});
+					ForeverTools.killMusic([FlxG.sound.music]);
+					Main.switchState(this, new modcharting.ModchartEditorState());
 				case "Character Offset Editor":
 					ForeverTools.killMusic([FlxG.sound.music]);
 					Main.switchState(this, new meta.state.editors.CharacterOffset());
@@ -129,13 +114,7 @@ class EditorSelectorState extends meta.MusicBeat.MusicBeatState
 
 			item.alpha = 0.6;
 			if (item.targetY == 0)
-			{
 				item.alpha = 1;
-				selectorLeft.x = item.x - 63;
-				selectorLeft.y = item.y;
-				selectorRight.x = item.x + item.width + 15;
-				selectorRight.y = item.y;
-			}
 		}
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 	}

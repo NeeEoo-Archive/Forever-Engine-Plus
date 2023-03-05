@@ -64,6 +64,18 @@ class ShaderManager
 			shaders[shader].beatHit(curBeat);
 		}
 	}
+
+	/**
+	 * Make the shaders from the manager react to the step.
+	 * @param curStep The `curStep` variable.
+	 */
+	public function stepHit(curStep:Int)
+	{
+		for (shader in shaders.keys())
+		{
+			shaders[shader].stepHit(curStep);
+		}
+	}
 }
 
 /**

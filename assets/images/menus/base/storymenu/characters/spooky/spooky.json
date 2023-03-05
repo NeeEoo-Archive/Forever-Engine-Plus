@@ -1,0 +1,9 @@
+{
+	"name": "Menu_Spooky_Kids",
+	"anim": "M Spooky Kids Idle",
+	"confirmAnim": "M Spooky Kids Idle",
+	"fps": 24,
+	"scale": 1,
+	"offsets": [-30, 85],
+	"flipX": false
+}

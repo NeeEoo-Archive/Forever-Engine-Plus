@@ -51,6 +51,7 @@ class HScript extends Script {
 		'Math' => Math,
 		'Std' => Std,
 		'Main' => Main,
+		'settings' => Init.trueSettings
 	];
 
 	// same docs as Script lmao
@@ -194,7 +195,7 @@ class HScript extends Script {
 		// trace dumb >_<
 		set('trace', function(value:Dynamic):Void {
 			// complicated shit (i would use actually haxe trace but this faster i think + that one doesn't get file path correct)
-			Sys.println('${hscript_path}:${interp.posInfos().lineNumber}: [ SCRIPTS ] $value');
+			Sys.println('[HSCRIPT] ${hscript_path}:${interp.posInfos().lineNumber}: $value');
 		});
 
 		/*// load other scripts

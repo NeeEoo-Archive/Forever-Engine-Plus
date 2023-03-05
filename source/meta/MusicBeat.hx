@@ -120,6 +120,7 @@ class MusicBeatState extends modcharting.ModchartMusicBeatState
 
 	public function stepHit():Void
 	{
+		shaders.stepHit(curStep);
 		if (curStep % 4 == 0)
 			beatHit();
 
@@ -190,6 +191,7 @@ class MusicBeatSubState extends FlxSubState
 
 	public function stepHit():Void
 	{
+		shaders.stepHit(curStep);
 		if (curStep % 4 == 0)
 			beatHit();
 	}

@@ -17,7 +17,6 @@
    * Sword352: Engine Owner
    * [Leather128](https://www.youtube.com/channel/UCbCtO-ghipZessWaOBx8u1g): HScript Support
    * Powerboy: Engine Artist
-   * Frakits: Helped me writing the character offset editor lol
 
 * [Forever Engine Legacy](https://github.com/BeastlyGabi/Forever-Engine-Archive/tree/legacy)
     * [Yoshubs](https://github.com/Yoshubs):

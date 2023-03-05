@@ -1,0 +1,9 @@
+{
+	"name": "Menu_Parents",
+	"anim": "M Parents Idle",
+	"confirmAnim": "M Parents Idle",
+	"fps": 24,
+	"scale": 1,
+	"offsets": [-125, 0],
+	"flipX": false
+}

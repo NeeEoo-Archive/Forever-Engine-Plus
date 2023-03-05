@@ -1,15 +1,33 @@
+// things to do asap
+// for arts related things here, its because powerboy is busy and is not on the mood rn
+// but i hope the arts is getting finished soon
+replace the placeholders credits assets
+replace the credits button
+replace the week bgs on story mode
+add github as a social media credit
+setting shaders **script** variables
+
 // ONLY SWORD CAN DO THESE
-songs list in json (so ez)
-credits menu
+unlocking system for songs and weeks
+general scripts on assets/data/scripts that you can load on the song script
 softcoded stages
+softcoded characters
 playstate changeables (playback speed, practice mode etc)
-softcoded modcharts
 
 // uuhm someone to help sword pls <:)
+softcoded modcharts (assets/songs/da-song/modchart.json)
++ softcoded modcharts modifiers (assets/data/modcharts-modifiers/da-modifier.hxs)
 custom notetypes
 custom events
 charting state rework
 
 editors:
-shader editor? maybe
+characters editor
+stages editor maybe
+dialogue editors (characters + the dialogue itself)
+shader editor? maybe idk cuz you can reload them by restarting a song i mean maybe like a shader hot reload state or smth
 modchart editor
+
+then...
+make a wiki when everything is done on this todo list
+and a discord server cuz why not

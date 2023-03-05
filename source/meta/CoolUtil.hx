@@ -9,10 +9,37 @@ using StringTools;
 import sys.FileSystem;
 #end
 
+typedef WeekFile =
+{
+	var songs:Array<String>;
+	var icons:Array<String>;
+	var colors:Array<Array<Int>>;
+	var characters:Array<String>;
+	var week_image:String;
+	var week_bg:String;
+	var difficulties:Array<String>;
+	var expression:String;
+	var hide_from_freeplay:Bool;
+	var hide_from_story:Bool;
+}
+
 class CoolUtil
 {
 	public static var difficultyArray:Array<String> = ['EASY', "NORMAL", "HARD"];
 	public static var difficultyLength = difficultyArray.length;
+	public static var customDifficulties:Array<String> = difficultyArray;
+	public static var weeks:Array<WeekFile>;
+
+	public static function loadWeeks()
+	{
+		weeks = haxe.Json.parse(openfl.Assets.getText(Paths.data('weeks.json')));
+
+		for(i in 0...weeks.length)
+		{
+			if(weeks[i].difficulties == null)
+				weeks[i].difficulties = difficultyArray;
+		}
+	}
 
 	public static function difficultyFromNumber(number:Int):String
 	{

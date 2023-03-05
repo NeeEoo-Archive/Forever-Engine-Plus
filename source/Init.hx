@@ -176,7 +176,13 @@ class Init extends FlxState
 			Checkmark,
 			"Wheter to show the timebar.",
 			NOT_FORCED
-		]
+		],
+		'Flashing Lights' => [
+			true,
+			Checkmark,
+			"Wheter to enable or disable the flashing lights. If you are sensitive to them, please disable this option!",
+			NOT_FORCED
+	    ]
 	];
 
 	public static var trueSettings:Map<String, Dynamic> = [];

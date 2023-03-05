@@ -1,0 +1,9 @@
+{
+	"name": "Menu_GF",
+	"anim": "M GF Idle",
+	"confirmAnim": "M GF Idle",
+	"fps": 24,
+	"scale": 1,
+	"offsets": [0, 25],
+	"flipX": false
+}

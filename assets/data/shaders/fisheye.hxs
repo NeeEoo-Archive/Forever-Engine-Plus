@@ -1,0 +1,6 @@
+var power:Float = 0;
+function onCreate()
+{
+    loadShader("fisheye");
+    shaderData.power.value = [power];
+}

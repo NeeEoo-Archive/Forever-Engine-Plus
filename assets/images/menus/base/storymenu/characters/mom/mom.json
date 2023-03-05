@@ -1,0 +1,9 @@
+{
+	"name": "Menu_Mom",
+	"anim": "M Mom Idle",
+	"confirmAnim": "M Mom Idle",
+	"fps": 24,
+	"scale": 1,
+	"offsets": [0, -10],
+	"flipX": false
+}
