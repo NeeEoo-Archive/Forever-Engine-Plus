@@ -51,6 +51,6 @@
     * THEY MADE THE BASE GAME EXIST SO LIKE WITHOUT THEM THIS WOULD NOT HAVE BEEN POSSIBLE GO CHECK THEM OUT RIGHT NOW;
 
 ----------------------------------------------
-## To see changes made to the engine, check out the changelog [here](/CHANGELOG.md).
+## To see changes made to the engine, check out the changelog [here](/docs/CHANGELOG.md).
 ## For compiling help, check out this little guide [here](/docs/COMPILE-HELP.md).
 ## **FOREVER ENGINE PLUS IS ONLY MEANT TO BE USED ON DESKTOP! I AM NOT RESPONSIBLE FOR CRASHES/PROBLEMS WITH HTML5, NOR AM I RESPONSIBLE FOR MAINTAINING HTML5.**
