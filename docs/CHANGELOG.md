@@ -13,7 +13,7 @@ Originally used by [ninjamuffin99](https://github.com/ninjamuffin99) in the [ori
 - Added icons bops to freeplay
 - Modified some modcharting scripts from the fnf-modding-tools library
 - Tweaked a bit the main menu
-- Fixed the shader bug when resizing the window
+- Fixed the shader bug when resizing the window thanks to [lunarcleint](https://www.youtube.com/watch?v=izZtJAmdfsI) on his bug fixes video
 - Fixed the visible judgements and combo images bug when caching them at the countdown on PlayState
 - Fixed the bg color tween on freeplay
 - The charting state and editors are now only available on debug builds

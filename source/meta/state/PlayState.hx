@@ -97,15 +97,12 @@ class PlayState extends MusicBeatState
 	private var curSong:String = "";
 	private var gfSpeed:Int = 1;
 
-	public static var health:Float = 1; // mario
+	public static var health:Float = 1;
 	public static var combo:Int = 0;
-
 	public static var misses:Int = 0;
-
 	public static var deaths:Int = 0;
 
 	public var generatedMusic:Bool = false;
-
 	private var startingSong:Bool = false;
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
@@ -123,8 +120,10 @@ class PlayState extends MusicBeatState
 
 	public var camDisplaceX:Float = 0;
 	public var camDisplaceY:Float = 0; // might not use depending on result
-
 	public static var cameraSpeed:Float = 1;
+
+	//public static var playbackRate:Float;
+	public static var practiceMode:Bool = false;
 
 	public static var defaultCamZoom:Float = 1.05;
 
@@ -165,31 +164,14 @@ class PlayState extends MusicBeatState
 	//var modcharts:Map<String, ModchartFile>;
 	var coolScript:HScript;
 
-	function resetStatics()
-	{
-		// reset any values and variables that are static
-		instance = this;
-		songScore = 0;
-		combo = 0;
-		health = 1;
-		misses = 0;
-		// sets up the combo object array
-		lastCombo = [];
-		defaultCamZoom = 1.05;
-		cameraSpeed = 1;
-		forceZoom = [0, 0, 0, 0];
-		endCutscene = "";
-		assetModifier = 'base';
-		changeableSkin = 'default';
-		validScore = true;
-	}
-
 	// at the beginning of the playstate
 	override public function create()
 	{
 		super.create();
 
 		resetStatics();
+		if(isStoryMode) resetModifiers();
+		//cameraSpeed = playbackRate;
 
 		Timings.callAccuracy();
 
@@ -631,7 +613,7 @@ class PlayState extends MusicBeatState
 			{
 				if (startedCountdown)
 				{
-					Conductor.songPosition += elapsed * 1000;
+					Conductor.songPosition += elapsed * 1000 /** playbackRate*/;
 					if (Conductor.songPosition >= 0)
 						startSong();
 				}
@@ -639,7 +621,7 @@ class PlayState extends MusicBeatState
 			else
 			{
 				// Conductor.songPosition = FlxG.sound.music.time;
-				Conductor.songPosition += elapsed * 1000;
+				Conductor.songPosition += elapsed * 1000 /** playbackRate*/;
 
 				if (!paused)
 				{
@@ -740,7 +722,7 @@ class PlayState extends MusicBeatState
 				health = 0;
 			}
 
-			if (health <= 0 && startedCountdown)
+			if (health <= 0 && startedCountdown && !practiceMode)
 			{
 				paused = true;
 				// startTimer.active = false;
@@ -837,7 +819,7 @@ class PlayState extends MusicBeatState
 
 				strumline.allNotes.forEachAlive(function(daNote:Note)
 				{
-					var roundedSpeed = FlxMath.roundDecimal(daNote.noteSpeed, 2);
+					var roundedSpeed = FlxMath.roundDecimal(daNote.noteSpeed, 2)/* * playbackRate*/;
 					var receptorPosY:Float = strumline.receptors.members[Math.floor(daNote.noteData)].y + Note.swagWidth / 6;
 					var psuedoY:Float = (downscrollMultiplier * -((Conductor.songPosition - daNote.strumTime) * (0.45 * roundedSpeed)));
 					var psuedoX = 25 + daNote.noteVisualOffset;
@@ -1341,7 +1323,7 @@ class PlayState extends MusicBeatState
 					{
 						numScore.kill();
 					},
-					startDelay: Conductor.crochet * 0.002
+					startDelay: Conductor.crochet * 0.002 /*/ playbackRate*/
 				});
 			}
 			else
@@ -1494,6 +1476,7 @@ class PlayState extends MusicBeatState
 		{
 			songMusic.play();
 			songMusic.onComplete = endSong;
+			//songMusic.pitch = vocals.pitch = playbackRate;
 			vocals.play();
 
 			//resyncVocals();
@@ -1513,7 +1496,7 @@ class PlayState extends MusicBeatState
 		// FlxG.log.add(ChartParser.parse());
 
 		var songData = SONG;
-		Conductor.changeBPM(songData.bpm);
+		Conductor.changeBPM(songData.bpm/* * playbackRate*/);
 
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
 		songDetails = CoolUtil.dashToSpace(SONG.song) + ' - ' + CoolUtil.difficultyFromNumber(storyDifficulty);
@@ -1558,7 +1541,12 @@ class PlayState extends MusicBeatState
 		vocals.pause();
 		Conductor.songPosition = songMusic.time;
 		vocals.time = Conductor.songPosition;
-		if(resyncInst) songMusic.play();
+		if(resyncInst)
+		{
+			//songMusic.pitch = playbackRate;
+			songMusic.play();
+		}
+		//vocals.pitch = playbackRate;
 		vocals.play();
 		//trace('new vocal time ${Conductor.songPosition}');
 	}
@@ -1570,8 +1558,8 @@ class PlayState extends MusicBeatState
 		/*if (songMusic.time >= Conductor.songPosition + 20 || songMusic.time <= Conductor.songPosition - 20)
 			resyncVocals();*/
 		if (songMusic != null
-			&& Math.abs(songMusic.time - Conductor.songPosition) > 20
-			|| (SONG.needsVoices && vocals != null && Math.abs(vocals.time - Conductor.songPosition) > 20))
+			&& Math.abs(songMusic.time - Conductor.songPosition) > (20 /** playbackRate*/)
+			|| (SONG.needsVoices && vocals != null && Math.abs(vocals.time - Conductor.songPosition) > (20 /** playbackRate*/)))
 			resyncVocals();
 		//*/
 
@@ -1733,6 +1721,7 @@ class PlayState extends MusicBeatState
 		canPause = false;
 		songMusic.volume = 0;
 		vocals.volume = 0;
+		resetModifiers();
 		if (validScore)
 			Highscore.saveScore(SONG.song, songScore, storyDifficulty);
 
@@ -1993,7 +1982,7 @@ class PlayState extends MusicBeatState
 
 		camHUD.visible = true;
 
-		startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer)
+		startTimer = new FlxTimer().start((Conductor.crochet / 1000) /*/ playbackRate*/, function(tmr:FlxTimer)
 		{
 			startedCountdown = true;
 
@@ -2084,6 +2073,32 @@ class PlayState extends MusicBeatState
 		}, 5);
 	}
 
+	private function resetStatics()
+	{
+		// reset any values and variables
+		instance = this;
+		songScore = 0;
+		combo = 0;
+		health = 1;
+		misses = 0;
+		// sets up the combo object array
+		lastCombo = [];
+		defaultCamZoom = 1.05;
+		cameraSpeed = 1;
+		forceZoom = [0, 0, 0, 0];
+		endCutscene = "";
+		assetModifier = 'base';
+		changeableSkin = 'default';
+		validScore = true;
+	}
+
+	private function resetModifiers()
+	{
+		// reset all the modifiers
+		//playbackRate = 1;
+		practiceMode = false;
+	}
+	
 	override function add(Object:FlxBasic):FlxBasic
 	{
 		if (Init.trueSettings.get('Disable Antialiasing') && Std.isOfType(Object, FlxSprite))

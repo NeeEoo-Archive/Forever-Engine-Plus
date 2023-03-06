@@ -122,7 +122,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this,
 			'daTime', 0, PlayState.songMusic.length);
 		timeBar.scrollFactor.set();
-		timeBar.createFilledBar(FlxColor.BLACK, FlxColor.WHITE);
+		timeBar.createFilledBar(FlxColor.BLACK, PlayState.dadOpponent.characterData.healthbarColor);
 		timeBar.numDivisions = 400;
 		timeBar.alpha = 0;
 		timeBar.visible = Init.trueSettings.get('Show Timebar');

@@ -157,11 +157,10 @@ class FreeplayState extends MusicBeatState
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
-		if(canBeat)
+		if(canBeat && !Init.trueSettings.get('Reduced Movements'))
 		{
-			var iconLerp = 1 - Main.framerateAdjust(0.15);
-			iconArray[curSelected].scale.set(FlxMath.lerp(1, iconArray[curSelected].scale.x, iconLerp),
-				FlxMath.lerp(1, iconArray[curSelected].scale.y, iconLerp));
+			var mult:Float = FlxMath.lerp(1, iconArray[curSelected].scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+			iconArray[curSelected].scale.set(mult, mult);
 			iconArray[curSelected].updateHitbox();
 		}
 
@@ -238,7 +237,7 @@ class FreeplayState extends MusicBeatState
 
 			if (!Init.trueSettings.get('Reduced Movements'))
 			{
-				iconArray[curSelected].setGraphicSize(Std.int(iconArray[curSelected].width + 30));
+				iconArray[curSelected].scale.set(1.2, 1.2);
 				iconArray[curSelected].updateHitbox();
 			}
 		}
