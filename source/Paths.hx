@@ -226,7 +226,7 @@ class Paths
 		return '$library/$file';
 	}
 
-	inline static function getPreloadPath(file:String)
+	inline public static function getPreloadPath(file:String)
 	{
 		var returnPath:String = 'assets/$file';
 		if (!FileSystem.exists(returnPath))

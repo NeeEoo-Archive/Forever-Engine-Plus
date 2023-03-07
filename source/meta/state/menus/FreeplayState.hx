@@ -192,10 +192,7 @@ class FreeplayState extends MusicBeatState
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 			CoolUtil.customDifficulties = existingDifficulties[curSelected];
-			trace('Difficulties: ${CoolUtil.customDifficulties}');
-
 			PlayState.storyWeek = songs[curSelected].week;
-			trace('CUR WEEK' + PlayState.storyWeek);
 
 			if (FlxG.sound.music != null)
 				FlxG.sound.music.stop();

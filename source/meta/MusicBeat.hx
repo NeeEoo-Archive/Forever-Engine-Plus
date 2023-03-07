@@ -28,7 +28,7 @@ class MusicBeatState extends modcharting.ModchartMusicBeatState
 	public var curBeat:Int = 0;
 
 	private var controls(get, never):Controls;
-	private var shaders:ShaderManager;
+	public var shaders:ShaderManager;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;

@@ -8,7 +8,6 @@ using StringTools;
 #if sys
 import sys.FileSystem;
 #end
-
 typedef WeekFile =
 {
 	var songs:Array<String>;
@@ -21,6 +20,13 @@ typedef WeekFile =
 	var expression:String;
 	var hide_from_freeplay:Bool;
 	var hide_from_story:Bool;
+}
+
+typedef PlayStateEvent =
+{
+	var curStep:Int;
+	var event:String;
+	var values:Array<String>;
 }
 
 class CoolUtil

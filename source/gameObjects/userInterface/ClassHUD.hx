@@ -20,21 +20,21 @@ using StringTools;
 class ClassHUD extends FlxTypedGroup<FlxBasic>
 {
 	// set up variables and stuff here
-	var scoreBar:FlxText;
+	public var scoreBar:FlxText;
 	var scoreLast:Float = -1;
 
 	// fnf mods
 	var scoreDisplay:String = 'beep bop bo skdkdkdbebedeoop brrapadop';
 
 	public var centerMark:FlxText; // song display name and difficulty at the center
-	var cornerMark:FlxText; // engine mark at the upper right corner
+	public var cornerMark:FlxText; // engine mark at the upper right corner
 	var centerMarkText:String;
 
 	public var autoplayMark:FlxText; // autoplay indicator at the center
 	public var autoplaySine:Float = 0;
 
-	private var healthBarBG:FlxSprite;
-	private var healthBar:FlxBar;
+	public var healthBarBG:FlxSprite;
+	public var healthBar:FlxBar;
 
 	public var timeBarBG:FlxSprite;
 	public var timeBar:FlxBar;

@@ -8,11 +8,11 @@ add github as a social media credit
 setting shaders **script** variables
 
 // things that Sword can do himself
-loading state
+loading state?
 unlocking system for songs and weeks
 general scripts on assets/data/scripts that you can load on the song script
 softcoded stages
-softcoded characters
+softcoded characters (with noteskins lel)
 playstate changeables (playback speed, practice mode etc)
 
 // uuhm someone to help sword pls <:)

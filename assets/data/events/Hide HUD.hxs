@@ -1,0 +1,4 @@
+function triggerEvent(params)
+{
+    FlxTween.tween(PlayState.camHUD, {alpha: 0}, 0.3);
+}

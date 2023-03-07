@@ -7,6 +7,7 @@ Originally used by [ninjamuffin99](https://github.com/ninjamuffin99) in the [ori
 
 ## [0.2.0]
 - Added a customizable credits menu - Everything you need for the credits menu (categories, peoples...) can be added in assets/data/credits.json!
+- Added events (not chartable thought the chart editor yet)
 - Added the flashing lights option
 - Added options access into the HScript API
 - Added some extra calls to scripts, like stepHit for shaders, update for the song's script, etc

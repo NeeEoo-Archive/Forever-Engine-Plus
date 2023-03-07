@@ -1,6 +1,11 @@
 package base.scripting;
 
 import flixel.FlxG;
+import flixel.addons.display.FlxBackdrop;
+import flixel.addons.effects.FlxTrail;
+import flixel.tweens.FlxTween;
+import gameObjects.shaders.CustomShader;
+import meta.data.dependency.FNFSprite;
 import openfl.Assets;
 
 using StringTools;
@@ -17,28 +22,44 @@ class HScript extends Script {
 		'FlxColor' => HScriptClasses.FlxColor,
 		'FlxInputState' => HScriptClasses.FlxInputState,
 		'FlxAxes' => HScriptClasses.FlxAxes,
+
 		// flixel.input.FlxInput.FlxInputStates //
 		'JUST_RELEASED' => -1,
 		'RELEASED' => 0,
 		'PRESSED' => 1,
 		'JUST_PRESSED' => 2,
+
 		// flixel.util.FlxAxes //
 		'X' => flixel.util.FlxAxes.X,
 		'Y' => flixel.util.FlxAxes.Y,
 		'XY' => flixel.util.FlxAxes.XY,
+
 		// flixel.text.FlxTextBorderStyle //
 		'NONE' => flixel.text.FlxText.FlxTextBorderStyle.NONE,
 		'SHADOW' => flixel.text.FlxText.FlxTextBorderStyle.SHADOW,
 		'OUTLINE' => flixel.text.FlxText.FlxTextBorderStyle.OUTLINE,
 		'OUTLINE_FAST' => flixel.text.FlxText.FlxTextBorderStyle.OUTLINE_FAST,
-		// import.hx //
+
+		// flixel.tweens.FlxTween.FlxTweenType
+		'PINGPONG' => FlxTweenType.PINGPONG,
+		'BACKWARD' => FlxTweenType.BACKWARD,
+		'LOOPING' => FlxTweenType.LOOPING,
+		'ONESHOT' => FlxTweenType.ONESHOT,
+		'PERSIST' => FlxTweenType.PERSIST,
+
+		// imports //
 		'FlxSprite' => flixel.FlxSprite,
-		'Conductor' => meta.data.Conductor,
-		'FlxG' => flixel.FlxG,
-		'StringTools' => StringTools,
 		'FlxTween' => flixel.tweens.FlxTween,
 		'FlxEase' => flixel.tweens.FlxEase,
+		'FlxTrail' => FlxTrail,
+		'FlxBackdrop' => FlxBackdrop,
+		'FlxG' => flixel.FlxG,
+		'FNFSprite' => FNFSprite,
+		'Conductor' => meta.data.Conductor,
+		'CustomShader' => CustomShader,
+		'StringTools' => StringTools,
 		'Json' => haxe.Json,
+		
 		// HScript specific //
 		'FlxMath' => flixel.math.FlxMath,
 		@:access(flixel.math.FlxPoint.FlxBasePoint)
@@ -51,7 +72,8 @@ class HScript extends Script {
 		'Math' => Math,
 		'Std' => Std,
 		'Main' => Main,
-		'settings' => Init.trueSettings
+		'settings' => Init.trueSettings,
+	    'Paths' => Paths
 	];
 
 	// same docs as Script lmao

@@ -1,5 +1,6 @@
 package meta.state;
 
+import base.scripting.EventScript;
 import base.scripting.HScript;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
@@ -94,8 +95,8 @@ class PlayState extends MusicBeatState
 
 	private static var prevCamFollow:FlxObject;
 
-	private var curSong:String = "";
-	private var gfSpeed:Int = 1;
+	public var curSong:String = "";
+	public var gfSpeed:Int = 1;
 
 	public static var health:Float = 1;
 	public static var combo:Int = 0;
@@ -153,13 +154,17 @@ class PlayState extends MusicBeatState
 	public static var strumLines:FlxTypedGroup<Strumline>;
 	public static var strumHUD:Array<FlxCamera> = [];
 
-	private var allUIs:Array<FlxCamera> = [];
+	public var allUIs:Array<FlxCamera> = [];
 
 	// stores the last judgement object
 	public static var lastRating:FlxSprite;
 	// stores the last combo objects in an array
 	public static var lastCombo:Array<FlxSprite>;
 
+	private var events:Array<CoolUtil.PlayStateEvent>;
+	private var eventScripts:Map<String, EventScript>;
+	private var eventCurStep:Int;
+	
 	public static var instance:PlayState;
 	//var modcharts:Map<String, ModchartFile>;
 	var coolScript:HScript;
@@ -1529,6 +1534,19 @@ class PlayState extends MusicBeatState
 		unspawnNotes.sort(sortByShit);
 		// give the game the heads up to be able to start
 		generatedMusic = true;
+
+		if(openfl.Assets.exists(Paths.songJson(CoolUtil.spaceToDash(curSong), 'events'))) {
+			events = haxe.Json.parse(openfl.Assets.getText(Paths.songJson(CoolUtil.spaceToDash(curSong), 'events'))); // get the events
+
+			for(script in sys.FileSystem.readDirectory(Paths.getPreloadPath("data/events/")))
+			{
+				var daScript = script.split(".hxs")[0];
+				eventScripts[daScript] = new EventScript(daScript); // load the events scripts
+				eventScripts[daScript].callFunc("onCreate");
+			}
+
+			trace('Events found');
+		}
 	}
 
 	function sortByShit(Obj1:Note, Obj2:Note):Int
@@ -1562,6 +1580,21 @@ class PlayState extends MusicBeatState
 			|| (SONG.needsVoices && vocals != null && Math.abs(vocals.time - Conductor.songPosition) > (20 /** playbackRate*/)))
 			resyncVocals();
 		//*/
+
+		if(!startingSong)
+		{
+			for (event in events)
+			{
+				if (event.curStep == eventCurStep)
+				{
+					if(eventScripts[event.event] != null)
+						eventScripts[event.event].callFunc("triggerEvent", [event.values]);
+					else 
+						trace('Null Event.');
+				}
+			}
+			eventCurStep++;
+		}
 
 		if (coolScript.exists("onStep"))
 			coolScript.call("onStep");
@@ -2090,6 +2123,10 @@ class PlayState extends MusicBeatState
 		assetModifier = 'base';
 		changeableSkin = 'default';
 		validScore = true;
+
+		events = [];
+		eventScripts = new Map<String, EventScript>();
+		eventCurStep = 0;
 	}
 
 	private function resetModifiers()
