@@ -5,10 +5,9 @@ replace the placeholders credits assets
 replace the credits button
 replace the week bgs on story mode
 add github as a social media credit
-setting shaders **script** variables
 
 // things that Sword can do himself
-loading state?
+extended healthicons ig (animated icons etc (NO WINNING ICONS))
 unlocking system for songs and weeks
 general scripts on assets/data/scripts that you can load on the song script
 softcoded stages
@@ -19,7 +18,6 @@ playstate changeables (playback speed, practice mode etc)
 softcoded modcharts (assets/songs/da-song/modchart.json)
 + softcoded modcharts modifiers (assets/data/modcharts-modifiers/da-modifier.hxs)
 custom notetypes
-custom events
 charting state rework
 characters editor
 stages editor maybe

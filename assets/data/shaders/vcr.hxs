@@ -1,4 +1,4 @@
-function onCreate()
+function initShader(settings)
 {
     loadShader("vcr");
 }

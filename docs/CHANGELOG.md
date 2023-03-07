@@ -12,6 +12,7 @@ Originally used by [ninjamuffin99](https://github.com/ninjamuffin99) in the [ori
 - Added options access into the HScript API
 - Added some extra calls to scripts, like stepHit for shaders, update for the song's script, etc
 - Added icons bops to freeplay
+- New Shaders Feature: Shader Settings, to customize the shader when we add it. (Check assets/data/shaders for some examples)
 - Modified some modcharting scripts from the fnf-modding-tools library
 - Tweaked a bit the main menu
 - Fixed the shader bug when resizing the window thanks to [lunarcleint](https://www.youtube.com/watch?v=izZtJAmdfsI) on his bug fixes video

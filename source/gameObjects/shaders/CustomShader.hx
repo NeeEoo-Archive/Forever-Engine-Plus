@@ -14,7 +14,7 @@ class CustomShader
     public var shader:FlxGraphicsShader;
     public var script:HScript;
 
-    public function new(file:String)
+    public function new(file:String, settings:Array<Dynamic>)
     {
         script = new HScript(Paths.data('shaders/$file.hxs'));
         script.set("loadShader", function(file:String) {
@@ -26,7 +26,7 @@ class CustomShader
             shader = new FlxGraphicsShader(vert, frag);
 			script.set("shaderData", shader.data);
         });
-        script.call("onCreate");
+        script.call("initShader", [settings]);
     }
 
     public function update(elapsed:Float)

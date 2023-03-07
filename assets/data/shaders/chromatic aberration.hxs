@@ -1,8 +1,10 @@
-function onCreate()
+var rgbShiftIntensity:Float = 0;
+function initShader(settings)
 {
     loadShader('chromatic aberration');
-    shaderData.rOffset.value = [0.008];
-    shaderData.rOffset.value = [-0.008];
+    shaderData.rOffset.value = [settings[0]];
+    shaderData.bOffset.value = [-settings[0]];
+    rgbShiftIntensity = settings[1];
 }
 
 var rgbOffset:Float;
@@ -15,5 +17,5 @@ function onUpdate(elapsed:Float)
 
 function onBeat(curBeat)
 {
-    if(curBeat % 2 == 0) rgbOffset = 0.007;
+    if(curBeat % 2 == 0) rgbOffset = rgbShiftIntensity;
 }

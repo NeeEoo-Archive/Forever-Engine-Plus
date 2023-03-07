@@ -21,11 +21,12 @@ class ShaderManager
     /**
 	 * Add a new `CustomShader` to the objects of the `applyArray` array and add the shader to the manager.
      * @param name The name of the script file. (assets/data/shader/`name`.hxs)
+	 * @param settings Settings for the shader.
      * @param applyArray The objects that will have the shader. (FlxSprite / FlxCamera)
      */
-    public function addShader(name:String, applyArray:Array<FlxBasic>)
+    public function addShader(name:String, settings:Array<Dynamic>, applyArray:Array<FlxBasic>)
     {
-        var newShader:CustomShader = new CustomShader(name);
+        var newShader:CustomShader = new CustomShader(name, settings);
 		shaders[name] = newShader;
 
 		for (object in applyArray)
@@ -95,11 +96,12 @@ class SubstateShaderManager extends ShaderManager
 	/**
 	 * Add a new `CustomShader` to the objects of the `applyArray` array and add the shader to the manager.
 	 * @param name The name of the script file. (assets/data/shader/`name`.hxs)
+	 * @param settings Settings for the shader.
 	 * @param applyArray The objects that will have the shader. (FlxSprite / FlxCamera)
 	 */
-	override function addShader(name:String, applyArray:Array<FlxBasic>)
+	override function addShader(name:String, settings:Array<Dynamic>, applyArray:Array<FlxBasic>)
 	{
-		super.addShader(name, applyArray);
+		super.addShader(name, settings, applyArray);
 		for(object in applyArray) applyObjects.push(object);
 	}
 

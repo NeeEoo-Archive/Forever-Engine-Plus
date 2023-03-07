@@ -390,19 +390,7 @@ class PlayState extends MusicBeatState
 		coolScript.set("camHUD", camHUD);
 		coolScript.set("camDadStrums", strumHUD[0]);
 		coolScript.set("camBfStrums", strumHUD[1]);
-		coolScript.set("addShader", function(shader:String, applyArray:Array<FlxBasic>)
-		{
-			shaders.addShader(shader, applyArray);
-		});
-		/*coolScript.set("setShaderScriptVariable", function(shader:String, variable:String, value:Float)
-		{
-			var daShader = shaders.shaders[shader];
-			if (daShader != null)
-			{
-				if (daShader.script.exists(variable))
-					daShader.script.set(variable, value);
-			}
-		});*/
+		coolScript.set("addShader", shaders.addShader);
 
 		/*coolScript.set("loadModchart", function(file:String) {
 			var modchart = new ModchartFile();
@@ -420,7 +408,7 @@ class PlayState extends MusicBeatState
 		/**
 		 * To test the shader handler, you can uncomment this code to apply the effect.
 		 */
-		//shaders.addShader('vcr', [camGame]);
+		//shaders.addShader('vcr', [camGame], []);
 	}
 
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>
