@@ -1,0 +1,11 @@
+function loadCharacter()
+{
+    frames = Paths.getSparrowAtlas('characters/BF_DEATH');
+
+	animation.addByPrefix('firstDeath', "BF dies", 24, false);
+	animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
+	animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
+	playAnim('firstDeath');
+
+    flipX = true;
+}

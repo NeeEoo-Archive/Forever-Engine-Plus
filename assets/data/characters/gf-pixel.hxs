@@ -1,0 +1,38 @@
+var danced:Bool = false;
+function loadCharacter()
+{
+	frames = Paths.getSparrowAtlas('characters/gfPixel');
+	animation.addByIndices('singUP', 'GF IDLE', [2], "", 24, false);
+	animation.addByIndices('danceLeft', 'GF IDLE', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+	animation.addByIndices('danceRight', 'GF IDLE', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+
+	addOffset('danceLeft', 0);
+	addOffset('danceRight', 0);
+
+	playAnim('danceRight');
+
+	setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+	updateHitbox();
+	antialiasing = false;
+}
+
+function dance(forced)
+{
+	if ((!StringTools.startsWith(animation.curAnim.name, 'hair')) && (!StringTools.startsWith(animation.curAnim.name, 'sad')))
+	{
+		danced = !danced;
+
+		if (danced)
+			playAnim('danceRight', forced);
+		else
+			playAnim('danceLeft', forced);
+	}
+}
+
+function onUpdate(elapsed)
+{
+	if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
+		playAnim('danceRight');
+	if ((StringTools.startsWith(animation.curAnim.name, 'sad')) && (animation.curAnim.finished))
+		playAnim('danceLeft');
+}

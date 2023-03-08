@@ -1,0 +1,18 @@
+function loadCharacter()
+{
+	frames = Paths.getSparrowAtlas('characters/Monster_Assets');
+    animation.addByPrefix('idle', 'monster idle', 24, false);
+	animation.addByPrefix('singUP', 'monster up note', 24, false);
+	animation.addByPrefix('singDOWN', 'monster down', 24, false);
+	animation.addByPrefix('singLEFT', 'Monster Right note', 24, false);
+	animation.addByPrefix('singRIGHT', 'Monster left note', 24, false);
+
+	addOffset("idle");
+	addOffset("singUP", -20, 94);
+	addOffset("singRIGHT", -51, 30);
+	addOffset("singLEFT", -30, 20);
+	addOffset("singDOWN", -50, -80);
+	playAnim('idle');
+	characterData.healthIcon = 'monster';
+    characterData.healthbarColor = FlxColor.fromRGB(255, 255, 0);
+}

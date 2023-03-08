@@ -1,0 +1,8 @@
+function onBeat(curBeat)
+{
+    switch (curBeat)
+	{
+		case 128, 129, 130:
+			PlayState.vocals.volume = 0;
+	}
+}

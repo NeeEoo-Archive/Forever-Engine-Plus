@@ -85,7 +85,7 @@ class PlayState extends MusicBeatState
 	// get it cus release
 	// I'm funny just trust me
 	private var curSection:Int = 0;
-	private var camFollow:FlxObject;
+	public var camFollow:FlxObject;
 	private var camFollowPos:FlxObject;
 
 	// Discord RPC variables
@@ -107,7 +107,7 @@ class PlayState extends MusicBeatState
 	private var startingSong:Bool = false;
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
-	var inCutscene:Bool = false;
+	public var inCutscene:Bool = false;
 	var endCutscene:String = "";
 	var canPause:Bool = true;
 
@@ -141,9 +141,7 @@ class PlayState extends MusicBeatState
 	private var stageBuild:Stage;
 
 	public static var uiHUD:ClassHUD;
-
 	public static var daPixelZoom:Float = 6;
-	public static var determinedChartType:String = "";
 
 	// strumlines
 	public static var dadStrums:Strumline;
@@ -206,10 +204,6 @@ class PlayState extends MusicBeatState
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
-		/// here we determine the chart type!
-		// determine the chart type here
-		determinedChartType = "FNF";
-
 		// set up a class for the stage type in here afterwards
 		curStage = "";
 		// call the song's stage if it exists
@@ -227,7 +221,7 @@ class PlayState extends MusicBeatState
 		// set up characters here too
 		gf = new Character();
 		gf.adjustPos = false;
-		gf.setCharacter(300, 100, stageBuild.returnGFtype(curStage));
+		gf.setCharacter(300, 100, SONG.gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
 
 		dadOpponent = new Character().setCharacter(50, 850, SONG.player2);
@@ -244,8 +238,6 @@ class PlayState extends MusicBeatState
 			assetModifier = SONG.assetModifier;
 
 		changeableSkin = Init.trueSettings.get("UI Skin");
-		if ((curStage.startsWith("school")) && ((determinedChartType == "FNF")))
-			assetModifier = 'pixel';
 
 		// add characters
 		add(gf);
@@ -405,10 +397,12 @@ class PlayState extends MusicBeatState
 		else
 			startCountdown();
 
-		/**
-		 * To test the shader handler, you can uncomment this code to apply the effect.
-		 */
-		//shaders.addShader('vcr', [camGame], []);
+		// SHADERS
+		// Big thanks to gedehari for the modified Shader and GraphicsShader classes to support runtime shader parsing
+		// To test the shader handler, uncomment one of the code below to apply some effects!
+		// shaders.addShader('chromatic aberration', [0.002, 0.009], [camGame]);
+		// shaders.addShader('fisheye', [0.20], [camGame]);
+		// shaders.addShader('vcr', [], [camGame]);
 	}
 
 	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>
@@ -1040,6 +1034,7 @@ class PlayState extends MusicBeatState
 
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			character.playAnim('sing' + stringDirection.toUpperCase() + 'miss', lockMiss);
+			gf.gfMissAnim(true);
 		}
 		decreaseCombo(popMiss);
 
@@ -1515,7 +1510,7 @@ class PlayState extends MusicBeatState
 		FlxG.sound.list.add(vocals);
 
 		// generate the chart
-		unspawnNotes = ChartLoader.generateChartType(SONG, determinedChartType);
+		unspawnNotes = ChartLoader.generateChartType(SONG);
 		// sometime my brain farts dont ask me why these functions were separated before
 
 		// sort through them
@@ -1608,7 +1603,7 @@ class PlayState extends MusicBeatState
 		super.beatHit();
 
 		if (coolScript.exists("onBeat"))
-			coolScript.call("onBeat");
+			coolScript.call("onBeat", [curBeat]);
 
 		if ((FlxG.camera.zoom < 1.35 && curBeat % 4 == 0) && (!Init.trueSettings.get('Reduced Movements')))
 		{
@@ -1628,42 +1623,9 @@ class PlayState extends MusicBeatState
 
 		uiHUD.beatHit();
 
-		//
 		charactersDance(curBeat);
 
-		// stage stuffs
 		stageBuild.stageUpdate(curBeat, boyfriend, gf, dadOpponent);
-
-		if (curSong.toLowerCase() == 'bopeebo')
-		{
-			switch (curBeat)
-			{
-				case 128, 129, 130:
-					vocals.volume = 0;
-			}
-		}
-
-		if (curSong.toLowerCase() == 'fresh')
-		{
-			switch (curBeat)
-			{
-				case 16 | 80:
-					gfSpeed = 2;
-				case 48 | 112:
-					gfSpeed = 1;
-			}
-		}
-
-		if (curSong.toLowerCase() == 'milf'
-			&& curBeat >= 168
-			&& curBeat < 200
-			&& !Init.trueSettings.get('Reduced Movements')
-			&& FlxG.camera.zoom < 1.35)
-		{
-			FlxG.camera.zoom += 0.015;
-			for (hud in allUIs)
-				hud.zoom += 0.03;
-		}
 	}
 
 	//
@@ -1767,31 +1729,13 @@ class PlayState extends MusicBeatState
 
 	private function songEndSpecificActions()
 	{
-		switch (SONG.song.toLowerCase())
-		{
-			case 'eggnog':
-				// make the lights go out
-				var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
-					-FlxG.height * FlxG.camera.zoom).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-				blackShit.scrollFactor.set();
-				add(blackShit);
-				camHUD.visible = false;
-
-				// oooo spooky
-				FlxG.sound.play(Paths.sound('Lights_Shut_off'));
-
-				// call the song end
-				var eggnogEndTimer:FlxTimer = new FlxTimer().start(Conductor.crochet / 1000, function(timer:FlxTimer)
-				{
-					callDefaultSongEnd();
-				}, 1);
-
-			default:
-				callDefaultSongEnd();
-		}
+		if(coolScript.exists("onSongEnd"))
+			coolScript.call("onSongEnd");
+		else
+			callDefaultSongEnd();
 	}
 
-	private function callDefaultSongEnd()
+	public function callDefaultSongEnd()
 	{
 		var difficulty:String = '-' + CoolUtil.difficultyFromNumber(storyDifficulty).toLowerCase();
 		difficulty = difficulty.replace('-normal', '');
@@ -1850,92 +1794,14 @@ class PlayState extends MusicBeatState
 
 	public function songIntroCutscene()
 	{
-		switch (curSong.toLowerCase())
-		{
-			case "winter-horrorland":
-				inCutscene = true;
-				var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
-				add(blackScreen);
-				blackScreen.scrollFactor.set();
-				camHUD.visible = false;
-
-				new FlxTimer().start(0.1, function(tmr:FlxTimer)
-				{
-					remove(blackScreen);
-					FlxG.sound.play(Paths.sound('Lights_Turn_On'));
-					camFollow.y = -2050;
-					camFollow.x += 200;
-					FlxG.camera.focusOn(camFollow.getPosition());
-					FlxG.camera.zoom = 1.5;
-
-					new FlxTimer().start(0.8, function(tmr:FlxTimer)
-					{
-						camHUD.visible = true;
-						remove(blackScreen);
-						FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
-							ease: FlxEase.quadInOut,
-							onComplete: function(twn:FlxTween)
-							{
-								startCountdown();
-							}
-						});
-					});
-				});
-			case 'roses':
-				// the same just play angery noise LOL
-				FlxG.sound.play(Paths.sound('ANGRY_TEXT_BOX'));
-				callTextbox();
-			case 'thorns':
-				inCutscene = true;
-				for (hud in allUIs)
-					hud.visible = false;
-
-				var red:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFff1b31);
-				red.scrollFactor.set();
-
-				var senpaiEvil:FlxSprite = new FlxSprite();
-				senpaiEvil.frames = Paths.getSparrowAtlas('cutscene/senpai/senpaiCrazy');
-				senpaiEvil.animation.addByPrefix('idle', 'Senpai Pre Explosion', 24, false);
-				senpaiEvil.setGraphicSize(Std.int(senpaiEvil.width * 6));
-				senpaiEvil.scrollFactor.set();
-				senpaiEvil.updateHitbox();
-				senpaiEvil.screenCenter();
-
-				add(red);
-				add(senpaiEvil);
-				senpaiEvil.alpha = 0;
-				new FlxTimer().start(0.3, function(swagTimer:FlxTimer)
-				{
-					senpaiEvil.alpha += 0.15;
-					if (senpaiEvil.alpha < 1)
-						swagTimer.reset();
-					else
-					{
-						senpaiEvil.animation.play('idle');
-						FlxG.sound.play(Paths.sound('Senpai_Dies'), 1, false, null, true, function()
-						{
-							remove(senpaiEvil);
-							remove(red);
-							FlxG.camera.fade(FlxColor.WHITE, 0.01, true, function()
-							{
-								for (hud in allUIs)
-									hud.visible = true;
-								callTextbox();
-							}, true);
-						});
-						new FlxTimer().start(3.2, function(deadTime:FlxTimer)
-						{
-							FlxG.camera.fade(FlxColor.WHITE, 1.6, false);
-						});
-					}
-				});
-			default:
-				callTextbox();
-		}
+		if (coolScript.exists("onSongIntro"))
+			coolScript.call("onSongIntro");
+		else
+			callTextbox();
 		//
 	}
 
-	function callTextbox()
+	public function callTextbox()
 	{
 		var dialogPath = Paths.json(SONG.song.toLowerCase() + '/dialogue');
 		if (sys.FileSystem.exists(dialogPath))

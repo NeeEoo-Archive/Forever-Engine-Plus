@@ -1,0 +1,6 @@
+function onSongIntro()
+{
+   // the same just play angery noise LOL
+	FlxG.sound.play(Paths.sound('ANGRY_TEXT_BOX'));
+	PlayState.instance.callTextbox();
+}

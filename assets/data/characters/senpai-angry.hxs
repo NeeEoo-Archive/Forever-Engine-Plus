@@ -1,0 +1,27 @@
+function loadCharacter()
+{
+    frames = Paths.getSparrowAtlas('characters/senpai');
+	animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
+	animation.addByPrefix('singUP', 'Angry Senpai UP NOTE', 24, false);
+	animation.addByPrefix('singLEFT', 'Angry Senpai LEFT NOTE', 24, false);
+	animation.addByPrefix('singRIGHT', 'Angry Senpai RIGHT NOTE', 24, false);
+	animation.addByPrefix('singDOWN', 'Angry Senpai DOWN NOTE', 24, false);
+
+	addOffset("idle");
+	addOffset("singUP", 5, 37);
+	addOffset("singRIGHT");
+	addOffset("singLEFT", 40);
+	addOffset("singDOWN", 14);
+
+	setGraphicSize(Std.int(width * 6));
+	updateHitbox();
+
+	playAnim("idle");
+
+	antialiasing = false;
+
+	characterData.camOffsetY = -330;
+	characterData.camOffsetX = -200;
+	characterData.healthIcon = 'senpai';
+	characterData.healthbarColor = FlxColor.fromRGB(255, 170, 111);
+}

@@ -1,0 +1,33 @@
+function loadCharacter()
+{
+	frames = Paths.getSparrowAtlas('characters/momCar');
+
+	animation.addByPrefix('idle', "Mom Idle", 24, false);
+	animation.addByIndices('idlePost', 'Mom Idle', [10, 11, 12, 13], "", 24, true);
+	animation.addByPrefix('singUP', "Mom Up Pose", 24, false);
+	animation.addByPrefix('singDOWN', "MOM DOWN POSE", 24, false);
+	animation.addByPrefix('singLEFT', 'Mom Left Pose', 24, false);
+	// ANIMATION IS CALLED MOM LEFT POSE BUT ITS FOR THE RIGHT
+	// CUZ DAVE IS DUMB!
+	animation.addByPrefix('singRIGHT', 'Mom Pose Left', 24, false);
+
+	addOffset("idle");
+	addOffset("singUP", 14, 71);
+	addOffset("singRIGHT", 10, -60);
+	addOffset("singLEFT", 250, -23);
+	addOffset("singDOWN", 20, -160);
+	addOffset("idleHair");
+
+	playAnim('idle');
+	characterData.healthIcon = 'mom';
+	characterData.healthbarColor = FlxColor.fromRGB(216, 85, 142);
+}
+
+
+function onUpdate(elapsed)
+{
+	if (animation.curAnim.finished && animation.curAnim.name == 'idle')
+	{
+		animation.play('idlePost', true, false, 0);
+	}
+}

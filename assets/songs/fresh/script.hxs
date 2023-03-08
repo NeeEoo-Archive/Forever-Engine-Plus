@@ -1,0 +1,8 @@
+function onBeat(curBeat)
+{
+    switch (curBeat)
+	{
+        case 16 | 80: PlayState.instance.gfSpeed = 2;
+	    case 48 | 112: PlayState.instance.gfSpeed = 1;
+	}
+}

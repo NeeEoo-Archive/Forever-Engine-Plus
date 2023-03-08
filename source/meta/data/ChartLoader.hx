@@ -111,13 +111,6 @@ class ChartLoader
 				load charts from the base game, export charts to the base game, and generally handle everything with an accuracy similar to that
 				of the main game so it feels like loading things in works well.
 			 */
-			case 'forever':
-				/*
-					That being said, however, we also have forever charts, which are complete restructures with new custom features and such.
-					Will be useful for projects later on, and it will give you more control over things you can do with the chart and with the game.
-					I'll also make it really easy to convert charts, you'll just have to load them in and pick an export option! If you want to play
-					songs made in forever engine with the base game then you can do that too.
-				 */
 		}
 
 		return unspawnNotes;

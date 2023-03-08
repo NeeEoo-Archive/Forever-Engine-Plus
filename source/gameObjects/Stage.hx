@@ -57,33 +57,28 @@ class Stage extends FlxTypedGroup<FlxBasic>
 		super();
 		this.curStage = curStage;
 
-		/// get hardcoded stage type if chart is fnf style
-		if (PlayState.determinedChartType == "FNF")
+		//dw, when ill do softcoded stages, the curStage will be in the chart and not on this class
+		switch (CoolUtil.spaceToDash(PlayState.SONG.song.toLowerCase()))
 		{
-			// this is because I want to avoid editing the fnf chart type
-			// custom stage stuffs will come with forever charts
-			switch (CoolUtil.spaceToDash(PlayState.SONG.song.toLowerCase()))
-			{
-				case 'spookeez' | 'south' | 'monster':
-					curStage = 'spooky';
-				case 'pico' | 'blammed' | 'philly-nice':
-					curStage = 'philly';
-				case 'milf' | 'satin-panties' | 'high':
-					curStage = 'highway';
-				case 'cocoa' | 'eggnog':
-					curStage = 'mall';
-				case 'winter-horrorland':
-					curStage = 'mallEvil';
-				case 'senpai' | 'roses':
-					curStage = 'school';
-				case 'thorns':
-					curStage = 'schoolEvil';
-				default:
-					curStage = 'stage';
-			}
-
-			PlayState.curStage = curStage;
+			case 'spookeez' | 'south' | 'monster':
+				curStage = 'spooky';
+			case 'pico' | 'blammed' | 'philly-nice':
+				curStage = 'philly';
+			case 'milf' | 'satin-panties' | 'high':
+				curStage = 'highway';
+			case 'cocoa' | 'eggnog':
+				curStage = 'mall';
+			case 'winter-horrorland':
+				curStage = 'mallEvil';
+			case 'senpai' | 'roses':
+				curStage = 'school';
+			case 'thorns':
+				curStage = 'schoolEvil';
+			default:
+				curStage = 'stage';
 		}
+
+		PlayState.curStage = curStage;
 
 		// to apply to foreground use foreground.add(); instead of add();
 		foreground = new FlxTypedGroup<FlxBasic>();
@@ -367,26 +362,6 @@ class Stage extends FlxTypedGroup<FlxBasic>
 				// add to the final array
 				add(stageCurtains);
 		}
-	}
-
-	// return the girlfriend's type
-	public function returnGFtype(curStage)
-	{
-		var gfVersion:String = 'gf';
-
-		switch (curStage)
-		{
-			case 'highway':
-				gfVersion = 'gf-car';
-			case 'mall' | 'mallEvil':
-				gfVersion = 'gf-christmas';
-			case 'school':
-				gfVersion = 'gf-pixel';
-			case 'schoolEvil':
-				gfVersion = 'gf-pixel';
-		}
-
-		return gfVersion;
 	}
 
 	// get the dad's position

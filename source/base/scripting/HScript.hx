@@ -53,6 +53,7 @@ class HScript extends Script {
 		'FlxEase' => flixel.tweens.FlxEase,
 		'FlxTrail' => FlxTrail,
 		'FlxBackdrop' => FlxBackdrop,
+		'FlxTimer' => flixel.util.FlxTimer,
 		'FlxG' => flixel.FlxG,
 		'FNFSprite' => FNFSprite,
 		'Conductor' => meta.data.Conductor,
