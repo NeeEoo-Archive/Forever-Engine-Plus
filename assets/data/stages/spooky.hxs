@@ -1,0 +1,19 @@
+var halloweenBG:FNFSprite;
+function onCreate()
+{
+    curStage = 'spooky';
+
+	halloweenBG = new FNFSprite(-200, -100);
+	halloweenBG.frames = Paths.getSparrowAtlas('backgrounds/' + curStage + '/halloween_bg');
+	halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
+	halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
+	halloweenBG.animation.play('idle');
+	halloweenBG.antialiasing = true;
+	add(halloweenBG);
+}
+
+function repositionCharacters(bf, dad, gf)
+{
+	if(dad.curCharacter == "monster")
+		dad.characterData.camOffsetX = 250;
+}

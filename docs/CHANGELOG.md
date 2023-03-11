@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 Originally used by [ninjamuffin99](https://github.com/ninjamuffin99) in the [original Funkin' repo](https://github.com/ninjamuffin99/Funkin/blob/master/CHANGELOG.md).
 
 ## [0.2.0]
+- Added softcoded characters
+- Added softcoded stages
+- Added animated health icons (customizable via json, WIP)
+- Added onSongIntro and onSongEnd on the PlayState's script
 - Added a customizable credits menu - Everything you need for the credits menu (categories, peoples...) can be added in assets/data/credits.json!
 - Added events (not chartable thought the chart editor yet)
 - Added the flashing lights option
@@ -14,7 +18,7 @@ Originally used by [ninjamuffin99](https://github.com/ninjamuffin99) in the [ori
 - Added icons bops to freeplay
 - New Shaders Feature: Shader Settings, to customize the shader when we add it. (Check assets/data/shaders for some examples)
 - Modified some modcharting scripts from the fnf-modding-tools library
-- Tweaked a bit the main menu
+- Tweaked a bit the main menu and freeplay menu
 - Fixed the shader bug when resizing the window thanks to [lunarcleint](https://www.youtube.com/watch?v=izZtJAmdfsI) on his bug fixes video
 - Fixed the visible judgements and combo images bug when caching them at the countdown on PlayState
 - Fixed the bg color tween on freeplay

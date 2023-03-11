@@ -56,7 +56,7 @@
     },
     {
         "songs": ["Cocoa", "Eggnog", "Winter-Horrorland"],
-        "icons": ["parents-christmas", "parents-christmas", "monster-christmas"],
+        "icons": ["parents", "parents", "monster"],
         "colors": [[141, 165, 206], [141, 165, 206], [141, 165, 206]],
         "characters": ["parents-christmas", "bf", "gf"],
         "week_image": "week5",

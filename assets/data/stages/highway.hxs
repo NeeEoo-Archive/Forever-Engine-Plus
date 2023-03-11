@@ -1,0 +1,60 @@
+var grpLimoDancers:FlxGroup;
+var limo:FNFSprite;
+var fastCar:FNFSprite;
+function onCreate()
+{
+	curStage = 'highway';
+	PlayState.defaultCamZoom = 0.90;
+
+	var skyBG:FNFSprite = new FNFSprite(-120, -50).loadGraphic(Paths.image('backgrounds/' + curStage + '/limoSunset'));
+	skyBG.scrollFactor.set(0.1, 0.1);
+	add(skyBG);
+
+	var bgLimo:FNFSprite = new FNFSprite(-200, 480);
+	bgLimo.frames = Paths.getSparrowAtlas('backgrounds/' + curStage + '/bgLimo');
+	bgLimo.animation.addByPrefix('drive', "background limo pink", 24);
+	bgLimo.animation.play('drive');
+	bgLimo.scrollFactor.set(0.4, 0.4);
+	add(bgLimo);
+
+	grpLimoDancers = new FlxGroup();
+	add(grpLimoDancers);
+
+	for (i in 0...5)
+	{
+		var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 130, bgLimo.y - 400);
+		dancer.scrollFactor.set(0.4, 0.4);
+		grpLimoDancers.add(dancer);
+	}
+
+	var overlayShit:FNFSprite = new FNFSprite(-500, -600).loadGraphic(Paths.image('backgrounds/' + curStage + '/limoOverlay'));
+	overlayShit.alpha = 0.5;
+
+	limo = new FNFSprite(-120, 550);
+	limo.frames = Paths.getSparrowAtlas('backgrounds/' + curStage + '/limoDrive');
+	limo.animation.addByPrefix('drive', "Limo stage", 24);
+	limo.animation.play('drive');
+	limo.antialiasing = true;
+
+	fastCar = new FNFSprite(-300, 160).loadGraphic(Paths.image('backgrounds/' + curStage + '/fastCarLol'));
+}
+
+function repositionCharacters(bf, dad, gf)
+{
+	bf.y -= 220;
+	bf.x += 260;
+	dad.characterData.camOffsetY = 50;
+}
+
+function addLayers()
+{
+	add(limo);
+}
+
+function onBeat(curBeat)
+{
+	grpLimoDancers.forEach(function(dancer:BackgroundDancer)
+	{
+		dancer.dance();
+	});
+}

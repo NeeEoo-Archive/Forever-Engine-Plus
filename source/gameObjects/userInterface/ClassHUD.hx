@@ -81,10 +81,12 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 		iconP1 = new HealthIcon(PlayState.boyfriend.characterData.healthIcon, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
+		iconP1.repositionIcon();
 		add(iconP1);
 
 		iconP2 = new HealthIcon(PlayState.dadOpponent.characterData.healthIcon, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
+		iconP2.repositionIcon();
 		add(iconP2);
 
 		scoreBar = new FlxText(FlxG.width / 2, Math.floor(healthBarBG.y + 40), 0, scoreDisplay);
@@ -181,27 +183,22 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	override public function update(elapsed:Float)
 	{
-		// pain, this is like the 7th attempt
 		healthBar.percent = (PlayState.health * 50);
 
 		var iconLerp = 1 - Main.framerateAdjust(0.15);
-		// iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.initialWidth, iconP1.width, iconLerp)));
-		// iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.initialWidth, iconP2.width, iconLerp)));
-
-		// the new way of scaling the icons lmao
 		iconP1.scale.set(FlxMath.lerp(1, iconP1.scale.x, iconLerp), FlxMath.lerp(1, iconP1.scale.y, iconLerp));
 		iconP2.scale.set(FlxMath.lerp(1, iconP2.scale.x, iconLerp), FlxMath.lerp(1, iconP2.scale.y, iconLerp));
-
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
 
-		var iconOffset:Int = 26;
+		for(ic in [iconP1, iconP2]) ic.update(elapsed);
 
+		var iconOffset:Int = 26;
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
-		iconP1.updateAnim(healthBar.percent);
-		iconP2.updateAnim(100 - healthBar.percent);
+		iconP1.updateIcon(healthBar.percent);
+		iconP2.updateIcon(100 - healthBar.percent);
 
 		if (autoplayMark.visible)
 		{

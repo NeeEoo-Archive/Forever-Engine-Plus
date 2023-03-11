@@ -7,10 +7,10 @@ function loadCharacter()
 	animation.addByPrefix('singLEFT', "left_", 24, false);
 	animation.addByPrefix('singDOWN', "spirit down_", 24, false);
 
-	addOffset("idle" -220, -280);
+	addOffset("idle", -200, -250);
 	addOffset("singLEFT", -200, -280);
 	addOffset("singDOWN", 170, 110);
-	addOffset("singUP", 220, -240);
+	addOffset("singUP", -200, -250);
 	addOffset("singRIGHT", -220, -280);
 	
 	setGraphicSize(Std.int(width * 6));

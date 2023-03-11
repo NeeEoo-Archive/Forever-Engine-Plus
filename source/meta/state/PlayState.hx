@@ -209,6 +209,7 @@ class PlayState extends MusicBeatState
 		// call the song's stage if it exists
 		if (SONG.stage != null)
 			curStage = SONG.stage;
+		else curStage = "stage";
 
 		// cache shit
 		displayRating('sick', 'early', true);
@@ -231,8 +232,7 @@ class PlayState extends MusicBeatState
 
 		var camPos:FlxPoint = new FlxPoint(gf.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
 
-		stageBuild.repositionPlayers(curStage, boyfriend, dadOpponent, gf);
-		stageBuild.dadPosition(curStage, boyfriend, dadOpponent, gf, camPos);
+		stageBuild.repositionPlayers(boyfriend, dadOpponent, gf);
 
 		if (SONG.assetModifier != null && SONG.assetModifier.length > 1)
 			assetModifier = SONG.assetModifier;
@@ -242,9 +242,7 @@ class PlayState extends MusicBeatState
 		// add characters
 		add(gf);
 
-		// add limo cus dumb layering
-		if (curStage == 'highway')
-			add(stageBuild.limo);
+		stageBuild.addLayers();
 
 		add(dadOpponent);
 		add(boyfriend);
@@ -534,7 +532,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		stageBuild.stageUpdateConstant(elapsed, boyfriend, gf, dadOpponent);
+		stageBuild.stageUpdateConstant(elapsed);
 
 		super.update(elapsed);
 
@@ -721,8 +719,6 @@ class PlayState extends MusicBeatState
 				deaths += 1;
 
 				openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-
-				FlxG.sound.play(Paths.sound('fnf_loss_sfx' + GameOverSubstate.stageSuffix));
 
 				#if DISCORD_RPC
 				Discord.changePresence("Game Over - " + songDetails, detailsSub, iconRPC);
@@ -1625,7 +1621,7 @@ class PlayState extends MusicBeatState
 
 		charactersDance(curBeat);
 
-		stageBuild.stageUpdate(curBeat, boyfriend, gf, dadOpponent);
+		stageBuild.stageUpdate(curBeat);
 	}
 
 	//

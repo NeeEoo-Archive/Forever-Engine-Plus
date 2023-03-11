@@ -19,4 +19,7 @@ function loadCharacter()
 	addOffset("deathConfirm", -30, -12);
 
 	characterData.offsetY = 180;
+	characterData.deathSFX = "fnf_loss_sfx-pixel";
+	characterData.deathMusic = "gameOver-pixel";
+	characterData.deathEndMusic = "gameOverEnd-pixel";
 }

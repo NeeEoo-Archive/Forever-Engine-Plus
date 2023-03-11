@@ -99,6 +99,7 @@ class FreeplayState extends MusicBeatState
 
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
 			icon.sprTracker = songText;
+			icon.repositionIcon();
 
 			// using a FlxGroup is too much fuss!
 			iconArray.push(icon);
@@ -151,12 +152,24 @@ class FreeplayState extends MusicBeatState
 		super.update(elapsed);
 		Conductor.songPosition += elapsed * 1000;
 
+		bg.scale.x = FlxMath.lerp(bg.scale.x, 1.0, elapsed * 6);
+		bg.scale.y = FlxMath.lerp(bg.scale.y, 1.0, elapsed * 6);
+		
 		var lerpVal = Main.framerateAdjust(0.1);
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, lerpVal));
 
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
+		for(icon in iconArray)
+		{
+			if(icon != iconArray[curSelected])
+			{
+				icon.scale.set(1, 1);
+				icon.updateHitbox();
+			}
+		}
+		
 		if(canBeat && !Init.trueSettings.get('Reduced Movements'))
 		{
 			var mult:Float = FlxMath.lerp(1, iconArray[curSelected].scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
@@ -186,20 +199,44 @@ class FreeplayState extends MusicBeatState
 
 		if (accepted)
 		{
-			var daDiff:String = existingDifficulties[curSelected][curDifficulty];
-			var poop:String = CoolUtil.spaceToDash('${songs[curSelected].songName.toLowerCase()}' + (daDiff == "NORMAL" ? "" : '-$daDiff'));
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = curDifficulty;
-			CoolUtil.customDifficulties = existingDifficulties[curSelected];
-			PlayState.storyWeek = songs[curSelected].week;
+			FlxG.sound.play(Paths.sound("confirmMenu"));
+			for (x in 0...grpSongs.length)
+			{
+				if (x == curSelected)
+				{
+					function selectSong()
+					{
+						// selecting the song
+						var daDiff:String = existingDifficulties[curSelected][curDifficulty];
+						var poop:String = CoolUtil.spaceToDash('${songs[curSelected].songName.toLowerCase()}' + (daDiff == "NORMAL" ? "" : '-$daDiff'));
+						PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+						PlayState.isStoryMode = false;
+						PlayState.storyDifficulty = curDifficulty;
+						CoolUtil.customDifficulties = existingDifficulties[curSelected];
+						PlayState.storyWeek = songs[curSelected].week;
 
-			if (FlxG.sound.music != null)
-				FlxG.sound.music.stop();
+						if (FlxG.sound.music != null)
+							FlxG.sound.music.stop();
 
-			threadActive = false;
+						threadActive = false;
 
-			Main.switchState(this, new PlayState());
+						Main.switchState(this, new PlayState());
+					}
+					
+					if(!Init.trueSettings.get('Reduced Movements'))
+						flixel.effects.FlxFlicker.flicker(grpSongs.members[x], 1, 0.06, false, false, function(flick:flixel.effects.FlxFlicker)
+						{
+							selectSong();
+						});
+					else selectSong();
+				}
+				else
+				{
+					FlxTween.tween(grpSongs.members[x], {x: grpSongs.members[x].x - 400}, 0.4, {ease: FlxEase.backIn});
+					for(object in [grpSongs.members[x], iconArray[x]])
+						FlxTween.tween(object, {alpha: 0}, 0.4, {ease: FlxEase.quadIn});
+				}
+			}
 		}
 
 		// Adhere the position of all the things (I'm sorry it was just so ugly before I had to fix it Shubs)
@@ -236,6 +273,11 @@ class FreeplayState extends MusicBeatState
 			{
 				iconArray[curSelected].scale.set(1.2, 1.2);
 				iconArray[curSelected].updateHitbox();
+
+				bg.scale.x = 1.015;
+				bg.scale.y = 1.015;
+
+				FlxTween.tween(bg, {width: Std.int(bg.width * 0.8), height: Std.int(bg.height * 0.8)}, 0.3);
 			}
 		}
 	}
@@ -301,9 +343,6 @@ class FreeplayState extends MusicBeatState
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
-		//
-
-		trace("curSelected: " + curSelected);
 
 		FlxTween.cancelTweensOf(bg);
 		FlxTween.color(bg, 0.35, bg.color, mainColor);
@@ -357,8 +396,8 @@ class FreeplayState extends MusicBeatState
 		songThread.sendMessage(curSelected);
 
 		var daSong = songs[curSelected].songName.toLowerCase().replace(" ", "-");
-		Conductor.changeBPM(meta.data.Song.loadFromJson(daSong, daSong).bpm);
-		new flixel.util.FlxTimer().start(0.2, function(_) {
+		Conductor.changeBPM(meta.data.Song.loadFromJson('$daSong-${existingDifficulties[curSelected][0]}', daSong).bpm);
+		new flixel.util.FlxTimer().start(0.01, function(_) { // timer to not do the big icon bug the first seconds after changing the conductor's bpm
 			canBeat = true;
 		});
 	}

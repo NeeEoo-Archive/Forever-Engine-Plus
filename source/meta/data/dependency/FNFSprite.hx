@@ -22,6 +22,13 @@ class FNFSprite extends FlxSprite
 		animOffsets = new Map<String, Array<Dynamic>>();
 	}
 
+	/**
+	 * Play an the animation `animName`.
+	 * @param AnimName The animation to play.
+	 * @param Force Should force the animation? (optional).
+	 * @param Reversed Should reverse the animation? (optional).
+	 * @param Frame Specific frame of the animation (optional).
+	 */
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
 		animation.play(AnimName, Force, Reversed, Frame);
@@ -35,9 +42,24 @@ class FNFSprite extends FlxSprite
 			offset.set(0, 0);
 	}
 
+	/**
+	 * Add an offset to the animation `name`.
+	 * @param name The animation
+	 * @param x X value of the offset
+	 * @param y Y value of the offset
+	 */
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
 	{
 		animOffsets[name] = [x, y];
+	}
+
+	/**
+	 * Handy function to repair offsets if they broke by resizing `this`.
+	 */
+	public function resizeOffsets()
+	{
+		for (i in animOffsets.keys())
+			animOffsets[i] = [animOffsets[i][0] * scale.x, animOffsets[i][1] * scale.y];
 	}
 
 	override public function loadGraphic(Graphic:FlxGraphicAsset, Animated:Bool = false, Width:Int = 0, Height:Int = 0, Unique:Bool = false,

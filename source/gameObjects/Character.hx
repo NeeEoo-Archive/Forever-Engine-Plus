@@ -19,6 +19,10 @@ typedef CharacterData =
 	var healthbarColor:FlxColor;
 	var healthIcon:String;
 	var deathCharacter:String;
+	var deathSFX:String;
+	var deathMusic:String;
+	var deathMusicBPM:Float;
+	var deathEndMusic:String;
 }
 
 /**
@@ -55,7 +59,11 @@ class Character extends FNFSprite
 			quickDancer: false,
 			healthIcon: 'face',
 			healthbarColor: FlxColor.fromRGB(192, 192, 192),
-			deathCharacter: 'bf-dead'
+			deathCharacter: 'bf-dead',
+			deathSFX: "fnf_loss_sfx",
+			deathMusic: "gameOver",
+			deathEndMusic: "gameOverEnd",
+			deathMusicBPM: 100
 		};
 
 		script = new HScript(Paths.data('characters/$character.hxs'));

@@ -1,0 +1,28 @@
+function onCreate()
+{
+	curStage = 'mallEvil';
+	var bg:FNFSprite = new FNFSprite(-400, -500).loadGraphic(Paths.image('backgrounds/mall/evilBG'));
+	bg.antialiasing = true;
+	bg.scrollFactor.set(0.2, 0.2);
+	bg.active = false;
+	bg.setGraphicSize(Std.int(bg.width * 0.8));
+	bg.updateHitbox();
+	add(bg);
+
+	var evilTree:FNFSprite = new FNFSprite(300, -300).loadGraphic(Paths.image('backgrounds/mall/evilTree'));
+	evilTree.antialiasing = true;
+	evilTree.scrollFactor.set(0.2, 0.2);
+	add(evilTree);
+
+	var evilSnow:FNFSprite = new FNFSprite(-300, 700).loadGraphic(Paths.image("backgrounds/mall/evilSnow"));
+	evilSnow.antialiasing = true;
+	add(evilSnow);
+}
+
+function repositionCharacters(bf, dad, gf)
+{
+	bf.x += 320;
+	bf.characterData.camOffsetX = 100;
+	if(dad.curCharacter == "monster-christmas")
+		dad.characterData.camOffsetX = 250;
+}
