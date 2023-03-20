@@ -12,18 +12,10 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxSort;
 import meta.data.Conductor;
 import meta.data.Timings;
-import meta.state.PlayState;
+import state.PlayState;
 
 using StringTools;
 
-/*
-	import flixel.FlxG;
-
-	import flixel.animation.FlxBaseAnimation;
-	import flixel.graphics.frames.FlxAtlasFrames;
-	import flixel.tweens.FlxEase;
-	import flixel.tweens.FlxTween; 
- */
 class UIStaticArrow extends FlxSprite
 {
 	/*  Oh hey, just gonna port this code from the previous Skater engine 
@@ -134,6 +126,9 @@ class Strumline extends FlxTypedGroup<FlxBasic>
 	public var character:Character;
 	public var playState:PlayState;
 	public var displayJudgements:Bool = false;
+	public var noteSplashes:Bool;
+	public var keyAmount:Int;
+	public var currentSplashSkin:String;
 
 	public function new(x:Float = 0, playState:PlayState, ?character:Character, ?displayJudgements:Bool = true, ?autoplay:Bool = true,
 			?noteSplashes:Bool = false, ?keyAmount:Int = 4, ?downscroll:Bool = false, ?parent:Strumline)
@@ -151,6 +146,8 @@ class Strumline extends FlxTypedGroup<FlxBasic>
 		this.character = character;
 		this.playState = playState;
 		this.displayJudgements = displayJudgements;
+		this.noteSplashes = noteSplashes;
+		this.keyAmount = keyAmount;
 
 		for (i in 0...keyAmount)
 		{
@@ -172,8 +169,9 @@ class Strumline extends FlxTypedGroup<FlxBasic>
 
 			if (noteSplashes)
 			{
-				var noteSplash:NoteSplash = ForeverAssets.generateNoteSplashes('noteSplashes', PlayState.assetModifier, PlayState.changeableSkin, 'UI', i);
+				var noteSplash:NoteSplash = ForeverAssets.generateNoteSplashes('noteSplashes', PlayState.assetModifier, Init.trueSettings.get("UI Skin"), 'UI', i);
 				splashNotes.add(noteSplash);
+				currentSplashSkin = 'noteSplashes';
 			}
 		}
 
@@ -192,6 +190,24 @@ class Strumline extends FlxTypedGroup<FlxBasic>
 		// play animation in existing notesplashes
 		var noteSplashRandom:String = (Std.string((FlxG.random.int(0, 1) + 1)));
 		splashNotes.members[coolNote.noteData].playAnim('anim' + noteSplashRandom);
+	}
+
+	public function regenerateSplashes(coolNote:Null<Note>)
+	{
+		splashNotes.forEachAlive(function(splash:NoteSplash) {
+			splash.destroy();
+		});
+		splashNotes.clear();
+
+		if(noteSplashes)
+		{
+			for(i in 0...keyAmount)
+			{
+				var noteSplash:NoteSplash = ForeverAssets.generateNoteSplashes('noteSplashes', PlayState.assetModifier, Init.trueSettings.get("UI Skin"),
+					'UI', i, coolNote);
+				splashNotes.add(noteSplash);
+			}
+		}
 	}
 
 	public function push(newNote:Note)

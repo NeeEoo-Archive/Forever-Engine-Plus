@@ -1,5 +1,6 @@
 package gameObjects.userInterface.notes;
 
+import base.scripting.HScript;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -12,7 +13,7 @@ import meta.*;
 import meta.data.*;
 import meta.data.Section.SwagSection;
 import meta.data.dependency.FNFSprite;
-import meta.state.PlayState;
+import state.PlayState;
 
 using StringTools;
 
@@ -22,14 +23,17 @@ class Note extends FNFSprite
 
 	public var mustPress:Bool = false;
 	public var noteData:Int = 0;
-	public var noteAlt:Float = 0;
-	public var noteType:Float = 0;
-	public var noteString:String = "";
+
+	public var noteType:String = "";
+	public var noteScript:HScript = null;
 
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
+
+	public var followAngle:Bool = true;
+	//public var doNormalMiss:Bool = true;
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
@@ -56,7 +60,7 @@ class Note extends FNFSprite
 	public var mesh:flixel.FlxStrip = null;
 	public var z:Float = 0;
 
-	public function new(strumTime:Float, noteData:Int, noteAlt:Float, ?prevNote:Note, ?sustainNote:Bool = false)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
 	{
 		super(x, y);
 
@@ -71,7 +75,6 @@ class Note extends FNFSprite
 
 		this.strumTime = strumTime;
 		this.noteData = noteData;
-		this.noteAlt = noteAlt;
 
 		// determine parent note
 		if (isSustainNote && prevNote != null)
@@ -108,73 +111,88 @@ class Note extends FNFSprite
 
 		these are for all your custom note needs
 	**/
-	public static function returnDefaultNote(assetModifier, strumTime, noteData, noteType, noteAlt, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
+	public static function returnDefaultNote(assetModifier, strumTime, noteData, noteType:String, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
 	{
-		var newNote:Note = new Note(strumTime, noteData, noteAlt, prevNote, isSustainNote);
-
-		// frames originally go here
-		switch (assetModifier)
+		var newNote:Note = new Note(strumTime, noteData, prevNote, isSustainNote);
+		if(noteType != "")
 		{
-			case 'pixel': // pixel arrows default
-				if (isSustainNote)
-				{
-					newNote.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('arrowEnds', assetModifier, Init.trueSettings.get("Note Skin"),
-						'noteskins/notes')), true, 7,
-						6);
-					newNote.animation.add('purpleholdend', [4]);
-					newNote.animation.add('greenholdend', [6]);
-					newNote.animation.add('redholdend', [7]);
-					newNote.animation.add('blueholdend', [5]);
-					newNote.animation.add('purplehold', [0]);
-					newNote.animation.add('greenhold', [2]);
-					newNote.animation.add('redhold', [3]);
-					newNote.animation.add('bluehold', [1]);
-				}
-				else
-				{
-					newNote.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('arrows-pixels', assetModifier, Init.trueSettings.get("Note Skin"),
-						'noteskins/notes')),
-						true, 17, 17);
-					newNote.animation.add('greenScroll', [6]);
-					newNote.animation.add('redScroll', [7]);
-					newNote.animation.add('blueScroll', [5]);
-					newNote.animation.add('purpleScroll', [4]);
-				}
-				newNote.antialiasing = false;
-				newNote.setGraphicSize(Std.int(newNote.width * PlayState.daPixelZoom));
-				newNote.updateHitbox();
-			default: // base game arrows for no reason whatsoever
-				newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('NOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
-					'noteskins/notes'));
-				newNote.animation.addByPrefix('greenScroll', 'green0');
-				newNote.animation.addByPrefix('redScroll', 'red0');
-				newNote.animation.addByPrefix('blueScroll', 'blue0');
-				newNote.animation.addByPrefix('purpleScroll', 'purple0');
-				newNote.animation.addByPrefix('purpleholdend', 'pruple end hold');
-				newNote.animation.addByPrefix('greenholdend', 'green hold end');
-				newNote.animation.addByPrefix('redholdend', 'red hold end');
-				newNote.animation.addByPrefix('blueholdend', 'blue hold end');
-				newNote.animation.addByPrefix('purplehold', 'purple hold piece');
-				newNote.animation.addByPrefix('greenhold', 'green hold piece');
-				newNote.animation.addByPrefix('redhold', 'red hold piece');
-				newNote.animation.addByPrefix('bluehold', 'blue hold piece');
-				newNote.setGraphicSize(Std.int(newNote.width * 0.7));
-				newNote.updateHitbox();
-				newNote.antialiasing = true;
+			newNote.noteScript = new HScript(Paths.data('notetypes/$noteType.hxs'));
+			newNote.noteScript.set_script_object(newNote);
+		    newNote.noteScript.set("PlayState", state.PlayState);
+			newNote.noteScript.set("game", state.PlayState.instance);
+			newNote.noteScript.set("Conductor", Conductor);
+			newNote.noteScript.call("loadNote", [isSustainNote, assetModifier]);
 		}
+		else
+		{
+			// frames originally go here
+			switch (assetModifier)
+			{
+				case 'pixel': // pixel arrows default
+					if (isSustainNote)
+					{
+						newNote.loadGraphic(Paths.image(ForeverTools.returnNoteSkin('arrowEnds', assetModifier, Init.trueSettings.get("Note Skin"),
+							'noteskins/notes')), true,
+							7, 6);
+						newNote.animation.add('purpleholdend', [4]);
+						newNote.animation.add('greenholdend', [6]);
+						newNote.animation.add('redholdend', [7]);
+						newNote.animation.add('blueholdend', [5]);
+						newNote.animation.add('purplehold', [0]);
+						newNote.animation.add('greenhold', [2]);
+						newNote.animation.add('redhold', [3]);
+						newNote.animation.add('bluehold', [1]);
+					}
+					else
+					{
+						newNote.loadGraphic(Paths.image(ForeverTools.returnNoteSkin('arrows-pixels', assetModifier, Init.trueSettings.get("Note Skin"),
+							'noteskins/notes')),
+							true, 17, 17);
+						newNote.animation.add('greenScroll', [6]);
+						newNote.animation.add('redScroll', [7]);
+						newNote.animation.add('blueScroll', [5]);
+						newNote.animation.add('purpleScroll', [4]);
+					}
+					newNote.antialiasing = false;
+					newNote.setGraphicSize(Std.int(newNote.width * PlayState.daPixelZoom));
+					newNote.updateHitbox();
+				default: // base game arrows for no reason whatsoever
+					newNote.frames = Paths.getSparrowAtlas(ForeverTools.returnNoteSkin('NOTE_assets', assetModifier, Init.trueSettings.get("Note Skin"),
+						'noteskins/notes'));
+					newNote.animation.addByPrefix('greenScroll', 'green0');
+					newNote.animation.addByPrefix('redScroll', 'red0');
+					newNote.animation.addByPrefix('blueScroll', 'blue0');
+					newNote.animation.addByPrefix('purpleScroll', 'purple0');
+					newNote.animation.addByPrefix('purpleholdend', 'pruple end hold');
+					newNote.animation.addByPrefix('greenholdend', 'green hold end');
+					newNote.animation.addByPrefix('redholdend', 'red hold end');
+					newNote.animation.addByPrefix('blueholdend', 'blue hold end');
+					newNote.animation.addByPrefix('purplehold', 'purple hold piece');
+					newNote.animation.addByPrefix('greenhold', 'green hold piece');
+					newNote.animation.addByPrefix('redhold', 'red hold piece');
+					newNote.animation.addByPrefix('bluehold', 'blue hold piece');
+					newNote.setGraphicSize(Std.int(newNote.width * 0.7));
+					newNote.updateHitbox();
+					newNote.antialiasing = true;
+			}
+		}
+		
 		//
-		if (!isSustainNote)
+
+		var canPlayAnim:Bool = newNote.noteScript == null ? true : false; // to not play unexisting animations
+
+		if (!isSustainNote && canPlayAnim)
 			newNote.animation.play(UIStaticArrow.getColorFromNumber(noteData) + 'Scroll');
 		// trace(prevNote);
 		if (isSustainNote && prevNote != null)
 		{
 			newNote.noteSpeed = prevNote.noteSpeed;
 			newNote.alpha = (Init.trueSettings.get('Opaque Holds')) ? 1 : 0.6;
-			newNote.animation.play(UIStaticArrow.getColorFromNumber(noteData) + 'holdend');
+			if(canPlayAnim) newNote.animation.play(UIStaticArrow.getColorFromNumber(noteData) + 'holdend');
 			newNote.updateHitbox();
 			if (prevNote.isSustainNote)
 			{
-				prevNote.animation.play(UIStaticArrow.getColorFromNumber(prevNote.noteData) + 'hold');
+				if(prevNote.noteScript == null) prevNote.animation.play(UIStaticArrow.getColorFromNumber(prevNote.noteData) + 'hold');
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * prevNote.noteSpeed;
 				prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
@@ -183,9 +201,11 @@ class Note extends FNFSprite
 		return newNote;
 	}
 
-	public static function returnQuantNote(assetModifier, strumTime, noteData, noteType, noteAlt, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
+	public static function returnQuantNote(assetModifier, strumTime, noteData, noteType:String, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
 	{
-		var newNote:Note = new Note(strumTime, noteData, noteAlt, prevNote, isSustainNote);
+		if(noteType != "") return returnDefaultNote(assetModifier, strumTime, noteData, noteType, isSustainNote, prevNote);
+
+		var newNote:Note = new Note(strumTime, noteData, prevNote, isSustainNote);
 
 		// actually determine the quant of the note
 		if (newNote.noteQuant == -1)
@@ -240,7 +260,7 @@ class Note extends FNFSprite
 				{
 					// in case you're unfamiliar with these, they're ternary operators, I just dont wanna check for pixel notes using a separate statement
 					var newNoteSize:Int = (assetModifier == 'pixel') ? 17 : 157;
-					newNote.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('NOTE_quants', assetModifier, Init.trueSettings.get("Note Skin"),
+					newNote.loadGraphic(Paths.image(ForeverTools.returnNoteSkin('NOTE_quants', assetModifier, Init.trueSettings.get("Note Skin"),
 						'noteskins/notes', 'quant')),
 						true, newNoteSize, newNoteSize);
 
@@ -253,7 +273,7 @@ class Note extends FNFSprite
 				else
 				{
 					// quant holds
-					newNote.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('HOLD_quants', assetModifier, Init.trueSettings.get("Note Skin"),
+					newNote.loadGraphic(Paths.image(ForeverTools.returnNoteSkin('HOLD_quants', assetModifier, Init.trueSettings.get("Note Skin"),
 						'noteskins/notes', 'quant')),
 						true, (assetModifier == 'pixel') ? 17 : 109, (assetModifier == 'pixel') ? 6 : 52);
 					newNote.animation.add('hold', [0 + (newNote.noteQuant * 4)]);

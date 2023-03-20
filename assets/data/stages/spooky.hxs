@@ -1,8 +1,6 @@
 var halloweenBG:FNFSprite;
 function onCreate()
 {
-    curStage = 'spooky';
-
 	halloweenBG = new FNFSprite(-200, -100);
 	halloweenBG.frames = Paths.getSparrowAtlas('backgrounds/' + curStage + '/halloween_bg');
 	halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');

@@ -1,0 +1,34 @@
+function loadStrum(staticArrowType, assetModifier)
+{
+	switch (assetModifier)
+	{
+		case 'pixel':
+			loadGraphic(Paths.image("noteskins/strums/quantcircle/pixel/quantcircle"), true, 17, 17);
+			animation.add('static', [staticArrowType]);
+			animation.add('pressed', [4 + staticArrowType, 8 + staticArrowType], 12, false);
+			animation.add('confirm', [12 + staticArrowType, 16 + staticArrowType], 24, false);
+
+			setGraphicSize(Std.int(width * 6));
+			updateHitbox();
+			antialiasing = false;
+
+			addOffset('static', -67, -50);
+			addOffset('pressed', -67, -50);
+			addOffset('confirm', -67, -50);
+		default:
+			var stringSect:String = UIStaticArrow.getArrowFromNumber(staticArrowType);
+
+			frames = Paths.getSparrowAtlas("noteskins/strums/quantcircle/base/quantcircle");
+
+			animation.addByPrefix('static', 'arrow' + stringSect.toUpperCase());
+			animation.addByPrefix('pressed', stringSect + ' press', 24, false);
+			animation.addByPrefix('confirm', stringSect + ' confirm', 24, false);
+
+			antialiasing = true;
+			setGraphicSize(Std.int(width * 0.7));
+
+			addOffset('static');
+			addOffset('pressed', -5, -5);
+			addOffset('confirm', 5, 5);
+        }
+}

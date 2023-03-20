@@ -1,0 +1,11 @@
+function onBeat(curBeat)
+{
+    if(!settings.get('Reduced Movements'))
+    {
+        for(hud in game.allUIs)
+        {
+            hud.y += 25;
+            FlxTween.tween(hud, {y: hud.y - 25}, 0.3, {ease: FlxEase.backOut});
+        }
+    }
+}

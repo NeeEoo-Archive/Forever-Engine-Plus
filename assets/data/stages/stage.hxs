@@ -1,7 +1,7 @@
 function onCreate()
 {
 	PlayState.defaultCamZoom = 0.9;
-	curStage = 'stage';
+
 	var bg:FNFSprite = new FNFSprite(-600, -200).loadGraphic(Paths.image('backgrounds/' + curStage + '/stageback'));
 	bg.antialiasing = true;
 	bg.scrollFactor.set(0.9, 0.9);
@@ -29,9 +29,4 @@ function onCreate()
 
 	// add to the final array
 	add(stageCurtains);
-}
-
-function repositionCharacters(bf, dad, gf)
-{
-	fixGirlfriend();
 }

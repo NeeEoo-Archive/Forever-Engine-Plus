@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
@@ -13,7 +14,7 @@ import flixel.util.FlxStringUtil;
 import meta.CoolUtil;
 import meta.data.Conductor;
 import meta.data.Timings;
-import meta.state.PlayState;
+import state.PlayState;
 
 using StringTools;
 
@@ -21,33 +22,27 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 {
 	// set up variables and stuff here
 	public var scoreBar:FlxText;
-	var scoreLast:Float = -1;
-
-	// fnf mods
-	var scoreDisplay:String = 'beep bop bo skdkdkdbebedeoop brrapadop';
-
 	public var centerMark:FlxText; // song display name and difficulty at the center
 	public var cornerMark:FlxText; // engine mark at the upper right corner
-	var centerMarkText:String;
-
 	public var autoplayMark:FlxText; // autoplay indicator at the center
-	public var autoplaySine:Float = 0;
-
 	public var healthBarBG:FlxSprite;
 	public var healthBar:FlxBar;
-
 	public var timeBarBG:FlxSprite;
 	public var timeBar:FlxBar;
+	public var iconP1:HealthIcon;
+	public var iconP2:HealthIcon;
+
+	// some variables
+	public var autoplaySine:Float = 0;
+	var scoreDisplay:String = 'beep bop bo skdkdkdbebedeoop brrapadop'; // fnf mods
+	var centerMarkText:String;
+
 	var songPercent:Float = 0;
 	var curTime:Float = 0;
 	var daTime:Float = 0;
 
 	private var SONG = PlayState.SONG;
-
-	public var iconP1:HealthIcon;
-	public var iconP2:HealthIcon;
-
-	private var stupidHealth:Float = 0;
+	private var scoreBarTween:FlxTween;
 
 	private var timingsMap:Map<String, FlxText> = [];
 
@@ -55,7 +50,6 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	var diffDisplay:String = CoolUtil.customDifficulties[PlayState.storyDifficulty];
 	var engineDisplay:String = "FOREVER ENGINE PLUS v" + Main.engineVersion;
 
-	// eep
 	public function new()
 	{
 		// call the initializations and stuffs
@@ -68,7 +62,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 			barY = 64;
 
 		healthBarBG = new FlxSprite(0,
-			barY).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
+			barY).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('UI', PlayState.assetModifier, 'healthBar')));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
@@ -111,7 +105,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		centerMark.alpha = 0;
 		centerMark.visible = Init.trueSettings.get('Show Timebar');
 
-		timeBarBG = new FlxSprite(0, centerMark.y + (centerMark.height / 4)).loadGraphic(Paths.image('UI/timeBar'));
+		timeBarBG = new FlxSprite(0, centerMark.y + (centerMark.height / 4)).loadGraphic(Paths.image('UI/base/timeBar'));
 		timeBarBG.setGraphicSize(Std.int(centerMark.width));
 		timeBarBG.updateHitbox();
 		timeBarBG.screenCenter(X);
@@ -185,13 +179,18 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	{
 		healthBar.percent = (PlayState.health * 50);
 
-		var iconLerp = 1 - Main.framerateAdjust(0.15);
-		iconP1.scale.set(FlxMath.lerp(1, iconP1.scale.x, iconLerp), FlxMath.lerp(1, iconP1.scale.y, iconLerp));
-		iconP2.scale.set(FlxMath.lerp(1, iconP2.scale.x, iconLerp), FlxMath.lerp(1, iconP2.scale.y, iconLerp));
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+		for (icon in [iconP1, iconP2])
+		{
+			var iconLerp = 1 - Main.framerateAdjust(0.15);
 
-		for(ic in [iconP1, iconP2]) ic.update(elapsed);
+			if(Init.trueSettings.get('Psych Icon Bops'))
+				icon.scale.set(FlxMath.lerp(icon.scale.x, 1, Main.framerateAdjust(0.15)), FlxMath.lerp(icon.scale.y, 1, Main.framerateAdjust(0.15)));
+			else
+			{
+				icon.scale.set(FlxMath.lerp(1, icon.scale.x, iconLerp), FlxMath.lerp(1, icon.scale.y, iconLerp));
+				icon.updateHitbox();
+			}
+		}
 
 		var iconOffset:Int = 26;
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
@@ -236,8 +235,6 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	public function updateScoreText()
 	{
 		var importSongScore = PlayState.songScore;
-		var importPlayStateCombo = PlayState.combo;
-		var importMisses = PlayState.misses;
 		var comboDisplay:String = (Timings.comboDisplay != null && Timings.comboDisplay != '' ? ' [${Timings.comboDisplay}]' : '');
 
 		scoreBar.text = 'Score: $importSongScore';
@@ -267,16 +264,36 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		PlayState.updateRPC(false);
 	}
 
+	public function scoreBarZoom()
+	{
+		if(Init.trueSettings.get("Score Bar Zoom On Hit"))
+		{
+			if(scoreBarTween != null)
+				scoreBarTween.cancel();
+
+			scoreBar.scale.x = 1.075;
+			scoreBar.scale.y = 1.075;
+
+			scoreBarTween = FlxTween.tween(scoreBar.scale, {x: 1, y: 1}, 0.2, {onComplete: function(_) {
+				scoreBarTween = null;
+			}});
+		}
+	}
+
 	public function beatHit()
 	{
 		if (!Init.trueSettings.get('Reduced Movements'))
 		{
-			iconP1.setGraphicSize(Std.int(iconP1.width + 30));
-			iconP2.setGraphicSize(Std.int(iconP2.width + 30));
-
-			iconP1.updateHitbox();
-			iconP2.updateHitbox();
+			for (icon in [iconP1, iconP2])
+			{
+				if(Init.trueSettings.get('Psych Icon Bops'))
+					icon.scale.set(1.2, 1.2);
+				else
+				{
+					icon.setGraphicSize(Std.int(icon.width + 30));
+					icon.updateHitbox();
+				}
+			}
 		}
-		//
 	}
 }

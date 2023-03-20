@@ -1,6 +1,7 @@
 # How to Compile:
 
 Basically, all of the files you need are in the engine itself through the [setup.bat](/setup-files/setup.bat).
+Make sure to regulary update the dependencies!
 
 Huge thanks to [FNF Source Code Guide](https://gamebanana.com/tuts/13798) for the download to the file except for Visual Studio Code, or whatever program you choose to use to program in the engine. 
 

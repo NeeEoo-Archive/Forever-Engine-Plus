@@ -19,4 +19,7 @@ function repositionCharacters(bf, dad, gf)
 	bf.y += 220;
 	gf.x += 180;
 	gf.y += 300;
+
+	bf.characterData.camOffsetX = 150;
+	bf.characterData.camOffsetY = -100;
 }

@@ -1,7 +1,7 @@
 package meta;
 
 import lime.utils.Assets;
-import meta.state.PlayState;
+import state.PlayState;
 
 using StringTools;
 
@@ -45,11 +45,6 @@ class CoolUtil
 			if(weeks[i].difficulties == null)
 				weeks[i].difficulties = difficultyArray;
 		}
-	}
-
-	public static function difficultyFromNumber(number:Int):String
-	{
-		return difficultyArray[number];
 	}
 
 	public static function dashToSpace(string:String):String
@@ -118,5 +113,31 @@ class CoolUtil
 		#else
 		flixel.FlxG.openURL(site);
 		#end
+	}
+
+	public static function getOffsetsFromTxt(path:String):Array<Array<String>>
+	{
+		var fullText:String = Assets.getText(path);
+
+		var firstArray:Array<String> = fullText.split('\n');
+		var swagOffsets:Array<Array<String>> = [];
+
+		for (i in firstArray)
+			swagOffsets.push(i.split(' '));
+
+		return swagOffsets;
+	}
+
+	public static function addTxtOffsetsToObject(path:String, object:Dynamic)
+	{
+		if (openfl.Assets.exists(path))
+		{
+			var offsets:Array<String> = coolTextFile(path);
+			for (i in 0...offsets.length)
+			{
+				var getterArray:Array<Array<String>> = getOffsetsFromTxt(path);
+				object.addOffset(getterArray[i][0], Std.parseInt(getterArray[i][1]), Std.parseInt(getterArray[i][2]));
+			}
+		}
 	}
 }

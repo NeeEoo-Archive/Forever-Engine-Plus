@@ -40,7 +40,7 @@ class Selector extends FlxTypedSpriteGroup<FlxSprite>
 		#if html5
 		// lol heres how we fuck with everyone
 		var lock = new FlxSprite(shiftX + ((word.length) * 50) + (shiftX / 4) + ((fpsCap) ? 20 : 0), shiftY);
-		lock.frames = Paths.getSparrowAtlas('menus/base/storymenu/campaign_menu_UI_assets');
+		lock.frames = Paths.getSparrowAtlas('menus/storymenu/campaign_menu_UI_assets');
 		lock.animation.addByPrefix('lock', 'lock', 24, false);
 		lock.animation.play('lock');
 		add(lock);
@@ -67,7 +67,7 @@ class Selector extends FlxTypedSpriteGroup<FlxSprite>
 	public function createSelector(objectX:Float = 0, objectY:Float = 0, word:String, dir:String):FNFSprite
 	{
 		var returnSelector = new FNFSprite(objectX, objectY);
-		returnSelector.frames = Paths.getSparrowAtlas('menus/base/storymenu/campaign_menu_UI_assets');
+		returnSelector.frames = Paths.getSparrowAtlas('menus/storymenu/campaign_menu_UI_assets');
 
 		returnSelector.animation.addByPrefix('idle', 'arrow $dir', 24, false);
 		returnSelector.animation.addByPrefix('press', 'arrow push $dir', 24, false);

@@ -3,7 +3,6 @@ var limo:FNFSprite;
 var fastCar:FNFSprite;
 function onCreate()
 {
-	curStage = 'highway';
 	PlayState.defaultCamZoom = 0.90;
 
 	var skyBG:FNFSprite = new FNFSprite(-120, -50).loadGraphic(Paths.image('backgrounds/' + curStage + '/limoSunset'));

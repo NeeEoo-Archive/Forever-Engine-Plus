@@ -1,5 +1,6 @@
 package;
 
+import base.scripting.HScript;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -8,10 +9,13 @@ import gameObjects.userInterface.*;
 import gameObjects.userInterface.menu.*;
 import gameObjects.userInterface.notes.*;
 import gameObjects.userInterface.notes.Strumline.UIStaticArrow;
+import haxe.Json;
+import meta.CoolUtil;
 import meta.data.Conductor;
 import meta.data.Section.SwagSection;
 import meta.data.Timings;
-import meta.state.PlayState;
+import openfl.Assets;
+import state.PlayState;
 
 using StringTools;
 
@@ -22,8 +26,8 @@ using StringTools;
 class ForeverAssets
 {
 	//
-	public static function generateCombo(asset:String, number:String, allSicks:Bool, assetModifier:String = 'base', changeableSkin:String = 'default',
-			baseLibrary:String, negative:Bool, createdColor:FlxColor, scoreInt:Int):FlxSprite
+	public static function generateCombo(asset:String, number:String, allSicks:Bool, assetModifier:String = 'base', baseLibrary:String,
+		negative:Bool, createdColor:FlxColor, scoreInt:Int):FlxSprite
 	{
 		var width = 100;
 		var height = 140;
@@ -33,7 +37,7 @@ class ForeverAssets
 			width = 10;
 			height = 12;
 		}
-		var newSprite:FlxSprite = new FlxSprite().loadGraphic(Paths.image(ForeverTools.returnSkinAsset(asset, assetModifier, changeableSkin, baseLibrary)),
+		var newSprite:FlxSprite = new FlxSprite().loadGraphic(Paths.image(ForeverTools.returnSkinAsset(baseLibrary, assetModifier, asset)),
 			true, width, height);
 		switch (assetModifier)
 		{
@@ -71,7 +75,7 @@ class ForeverAssets
 		return newSprite;
 	}
 
-	public static function generateRating(asset:String, perfectSick:Bool, timing:String, assetModifier:String = 'base', changeableSkin:String = 'default',
+	public static function generateRating(asset:String, perfectSick:Bool, timing:String, assetModifier:String = 'base',
 			baseLibrary:String):FlxSprite
 	{
 		var width = 500;
@@ -81,8 +85,7 @@ class ForeverAssets
 			width = 72;
 			height = 32;
 		}
-		var rating:FlxSprite = new FlxSprite().loadGraphic(Paths.image(ForeverTools.returnSkinAsset('judgements', assetModifier, changeableSkin,
-			baseLibrary)), true, width, height);
+		var rating:FlxSprite = new FlxSprite().loadGraphic(Paths.image(ForeverTools.returnSkinAsset(baseLibrary, assetModifier, 'judgements')), true, width, height);
 		switch (assetModifier)
 		{
 			default:
@@ -114,41 +117,47 @@ class ForeverAssets
 	}
 
 	public static function generateNoteSplashes(asset:String, assetModifier:String = 'base', changeableSkin:String = 'default', baseLibrary:String,
-			noteData:Int):NoteSplash
+			noteData:Int, ?coolNote:Null<Note>):NoteSplash
 	{
 		//
 		var tempSplash:NoteSplash = new NoteSplash(noteData);
-		switch (assetModifier)
-		{
-			case 'pixel':
-				tempSplash.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('splash-pixel', assetModifier, changeableSkin, baseLibrary)), true, 34, 34);
-				tempSplash.animation.add('anim1', [noteData, 4 + noteData, 8 + noteData, 12 + noteData], 24, false);
-				tempSplash.animation.add('anim2', [16 + noteData, 20 + noteData, 24 + noteData, 28 + noteData], 24, false);
-				tempSplash.animation.play('anim1');
-				tempSplash.addOffset('anim1', -120, -90);
-				tempSplash.addOffset('anim2', -120, -90);
-				tempSplash.setGraphicSize(Std.int(tempSplash.width * PlayState.daPixelZoom));
 
-			default:
-				// 'UI/$assetModifier/notes/noteSplashes'
-				tempSplash.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('noteSplashes', assetModifier, changeableSkin, baseLibrary)), true, 210, 210);
-				tempSplash.animation.add('anim1', [
-					(noteData * 2 + 1),
-					8 + (noteData * 2 + 1),
-					16 + (noteData * 2 + 1),
-					24 + (noteData * 2 + 1),
-					32 + (noteData * 2 + 1)
-				], 24, false);
-				tempSplash.animation.add('anim2', [
-					(noteData * 2),
-					8 + (noteData * 2),
-					16 + (noteData * 2),
-					24 + (noteData * 2),
-					32 + (noteData * 2)
-				], 24, false);
-				tempSplash.animation.play('anim1');
-				tempSplash.addOffset('anim1', -20, -10);
-				tempSplash.addOffset('anim2', -20, -10);
+		if(coolNote != null && coolNote.noteScript != null && coolNote.noteScript.exists("loadSplash"))
+			coolNote.noteScript.call("loadSplash", [tempSplash, noteData]);
+		else
+		{
+			switch (assetModifier)
+			{
+				case 'pixel':
+					tempSplash.loadGraphic(Paths.image(ForeverTools.returnSkinAsset(baseLibrary, "pixel", 'splash-pixel')), true, 34, 34);
+					tempSplash.animation.add('anim1', [noteData, 4 + noteData, 8 + noteData, 12 + noteData], 24, false);
+					tempSplash.animation.add('anim2', [16 + noteData, 20 + noteData, 24 + noteData, 28 + noteData], 24, false);
+					tempSplash.animation.play('anim1');
+					tempSplash.addOffset('anim1', -120, -90);
+					tempSplash.addOffset('anim2', -120, -90);
+					tempSplash.setGraphicSize(Std.int(tempSplash.width * PlayState.daPixelZoom));
+
+				default:
+					// 'UI/$assetModifier/notes/noteSplashes'
+					tempSplash.loadGraphic(Paths.image(ForeverTools.returnSkinAsset(baseLibrary, "base", 'noteSplashes')), true, 210, 210);
+					tempSplash.animation.add('anim1', [
+						(noteData * 2 + 1),
+						8 + (noteData * 2 + 1),
+						16 + (noteData * 2 + 1),
+						24 + (noteData * 2 + 1),
+						32 + (noteData * 2 + 1)
+					], 24, false);
+					tempSplash.animation.add('anim2', [
+						(noteData * 2),
+						8 + (noteData * 2),
+						16 + (noteData * 2),
+						24 + (noteData * 2),
+						32 + (noteData * 2)
+					], 24, false);
+					tempSplash.animation.play('anim1');
+					tempSplash.addOffset('anim1', -20, -10);
+					tempSplash.addOffset('anim2', -20, -10);
+			}
 		}
 
 		return tempSplash;
@@ -157,76 +166,89 @@ class ForeverAssets
 	public static function generateUIArrows(x:Float, y:Float, ?staticArrowType:Int = 0, assetModifier:String):UIStaticArrow
 	{
 		var newStaticArrow:UIStaticArrow = new UIStaticArrow(x, y, staticArrowType);
-		switch (assetModifier)
+		var skin = Init.trueSettings.get("Note Skin").toLowerCase();
+
+		if(Assets.exists(Paths.data('notestrums/skins/$skin.hxs')))
 		{
-			case 'pixel':
-				// look man you know me I fucking hate repeating code
-				// not even just a cleanliness thing it's just so annoying to tweak if something goes wrong like
-				// genuinely more programmers should make their code more modular
-				var framesArgument:String = "arrows-pixels";
-				newStaticArrow.loadGraphic(Paths.image(ForeverTools.returnSkinAsset('$framesArgument', assetModifier, Init.trueSettings.get("Note Skin"),
-					'noteskins/notes')), true,
-					17, 17);
-				newStaticArrow.animation.add('static', [staticArrowType]);
-				newStaticArrow.animation.add('pressed', [4 + staticArrowType, 8 + staticArrowType], 12, false);
-				newStaticArrow.animation.add('confirm', [12 + staticArrowType, 16 + staticArrowType], 24, false);
+			var temporaryScript:HScript = new HScript(Paths.data('notestrums/skins/$skin.hxs')); // temporary script
+			temporaryScript.set_script_object(newStaticArrow);
+			temporaryScript.call("loadStrum", [staticArrowType, assetModifier]);
+			temporaryScript.destroy(); // that gets destroyed after loading the note
+		}
+		else
+		{
+			// hardcoded strumskins if the script does not exist
+			switch (assetModifier)
+			{
+				case 'pixel':
+					// look man you know me I fucking hate repeating code
+					// not even just a cleanliness thing it's just so annoying to tweak if something goes wrong like
+					// genuinely more programmers should make their code more modular
+					var framesArgument:String = "arrows-pixels";
+					newStaticArrow.loadGraphic(Paths.image(ForeverTools.returnNoteSkin('$framesArgument', assetModifier, Init.trueSettings.get("Note Skin"),
+						'noteskins/notes')),
+						true, 17, 17);
+					newStaticArrow.animation.add('static', [staticArrowType]);
+					newStaticArrow.animation.add('pressed', [4 + staticArrowType, 8 + staticArrowType], 12, false);
+					newStaticArrow.animation.add('confirm', [12 + staticArrowType, 16 + staticArrowType], 24, false);
 
-				newStaticArrow.setGraphicSize(Std.int(newStaticArrow.width * PlayState.daPixelZoom));
-				newStaticArrow.updateHitbox();
-				newStaticArrow.antialiasing = false;
+					newStaticArrow.setGraphicSize(Std.int(newStaticArrow.width * PlayState.daPixelZoom));
+					newStaticArrow.updateHitbox();
+					newStaticArrow.antialiasing = false;
 
-				newStaticArrow.addOffset('static', -67, -50);
-				newStaticArrow.addOffset('pressed', -67, -50);
-				newStaticArrow.addOffset('confirm', -67, -50);
+					newStaticArrow.addOffset('static', -67, -50);
+					newStaticArrow.addOffset('pressed', -67, -50);
+					newStaticArrow.addOffset('confirm', -67, -50);
 
-			case 'chart editor':
-				newStaticArrow.loadGraphic(Paths.image('UI/forever/base/chart editor/note_array'), true, 157, 156);
-				newStaticArrow.animation.add('static', [staticArrowType]);
-				newStaticArrow.animation.add('pressed', [16 + staticArrowType], 12, false);
-				newStaticArrow.animation.add('confirm', [4 + staticArrowType, 8 + staticArrowType, 16 + staticArrowType], 24, false);
+				case 'chart editor':
+					newStaticArrow.loadGraphic(Paths.image('UI/base/chart editor/note_array'), true, 157, 156);
+					newStaticArrow.animation.add('static', [staticArrowType]);
+					newStaticArrow.animation.add('pressed', [16 + staticArrowType], 12, false);
+					newStaticArrow.animation.add('confirm', [4 + staticArrowType, 8 + staticArrowType, 16 + staticArrowType], 24, false);
 
-				newStaticArrow.addOffset('static');
-				newStaticArrow.addOffset('pressed');
-				newStaticArrow.addOffset('confirm');
+					newStaticArrow.addOffset('static');
+					newStaticArrow.addOffset('pressed');
+					newStaticArrow.addOffset('confirm');
 
-			default:
-				// probably gonna revise this and make it possible to add other arrow types but for now it's just pixel and normal
-				var stringSect:String = '';
-				// call arrow type I think
-				stringSect = UIStaticArrow.getArrowFromNumber(staticArrowType);
+				default:
+					// probably gonna revise this and make it possible to add other arrow types but for now it's just pixel and normal
+					var stringSect:String = '';
+					// call arrow type I think
+					stringSect = UIStaticArrow.getArrowFromNumber(staticArrowType);
 
-				var framesArgument:String = "NOTE_assets";
+					var framesArgument:String = "NOTE_assets";
 
-				newStaticArrow.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset('$framesArgument', assetModifier,
-					Init.trueSettings.get("Note Skin"), 'noteskins/notes'));
+					newStaticArrow.frames = Paths.getSparrowAtlas(ForeverTools.returnNoteSkin('$framesArgument', assetModifier,
+						Init.trueSettings.get("Note Skin"), 'noteskins/notes'));
 
-				newStaticArrow.animation.addByPrefix('static', 'arrow' + stringSect.toUpperCase());
-				newStaticArrow.animation.addByPrefix('pressed', stringSect + ' press', 24, false);
-				newStaticArrow.animation.addByPrefix('confirm', stringSect + ' confirm', 24, false);
+					newStaticArrow.animation.addByPrefix('static', 'arrow' + stringSect.toUpperCase());
+					newStaticArrow.animation.addByPrefix('pressed', stringSect + ' press', 24, false);
+					newStaticArrow.animation.addByPrefix('confirm', stringSect + ' confirm', 24, false);
 
-				newStaticArrow.antialiasing = true;
-				newStaticArrow.setGraphicSize(Std.int(newStaticArrow.width * 0.7));
+					newStaticArrow.antialiasing = true;
+					newStaticArrow.setGraphicSize(Std.int(newStaticArrow.width * 0.7));
 
-				// set little offsets per note!
-				// so these had a little problem honestly and they make me wanna off(set) myself so the middle notes basically
-				// have slightly different offsets than the side notes (which have the same offset)
+					// set little offsets per note!
+					// so these had a little problem honestly and they make me wanna off(set) myself so the middle notes basically
+					// have slightly different offsets than the side notes (which have the same offset)
 
-				var offsetMiddleX = 0;
-				var offsetMiddleY = 0;
-				if (staticArrowType > 0 && staticArrowType < 3)
-				{
-					offsetMiddleX = 2;
-					offsetMiddleY = 2;
-					if (staticArrowType == 1)
+					var offsetMiddleX = 0;
+					var offsetMiddleY = 0;
+					if (staticArrowType > 0 && staticArrowType < 3)
 					{
-						offsetMiddleX -= 1;
-						offsetMiddleY += 2;
+						offsetMiddleX = 2;
+						offsetMiddleY = 2;
+						if (staticArrowType == 1)
+						{
+							offsetMiddleX -= 1;
+							offsetMiddleY += 2;
+						}
 					}
-				}
 
-				newStaticArrow.addOffset('static');
-				newStaticArrow.addOffset('pressed', -2, -2);
-				newStaticArrow.addOffset('confirm', 36 + offsetMiddleX, 36 + offsetMiddleY);
+					newStaticArrow.addOffset('static');
+					newStaticArrow.addOffset('pressed', -2, -2);
+					newStaticArrow.addOffset('confirm', 36 + offsetMiddleX, 36 + offsetMiddleY);
+			}
 		}
 
 		return newStaticArrow;
@@ -235,15 +257,15 @@ class ForeverAssets
 	/**
 		Notes!
 	**/
-	public static function generateArrow(assetModifier, strumTime, noteData, noteType, noteAlt, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
+	public static function generateArrow(assetModifier, strumTime, noteData, noteType:String, ?isSustainNote:Bool = false, ?prevNote:Note = null):Note
 	{
 		var newNote:Note;
 		var changeableSkin:String = Init.trueSettings.get("Note Skin");
 		// gonna improve the system eventually
 		if (changeableSkin.startsWith('quant'))
-			newNote = Note.returnQuantNote(assetModifier, strumTime, noteData, noteType, noteAlt, isSustainNote, prevNote);
+			newNote = Note.returnQuantNote(assetModifier, strumTime, noteData, noteType, isSustainNote, prevNote)
 		else
-			newNote = Note.returnDefaultNote(assetModifier, strumTime, noteData, noteType, noteAlt, isSustainNote, prevNote);
+			newNote = Note.returnDefaultNote(assetModifier, strumTime, noteData, noteType, isSustainNote, prevNote);
 
 		// hold note shit
 		if (isSustainNote && prevNote != null)
@@ -261,14 +283,13 @@ class ForeverAssets
 	/**
 		Checkmarks!
 	**/
-	public static function generateCheckmark(x:Float, y:Float, asset:String, assetModifier:String = 'base', changeableSkin:String = 'default',
-			baseLibrary:String)
+	public static function generateCheckmark(x:Float, y:Float, asset:String, assetModifier:String = 'base', baseLibrary:String)
 	{
 		var newCheckmark:Checkmark = new Checkmark(x, y);
 		switch (assetModifier)
 		{
 			default:
-				newCheckmark.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset(asset, assetModifier, changeableSkin, baseLibrary));
+				newCheckmark.frames = Paths.getSparrowAtlas(ForeverTools.returnSkinAsset(baseLibrary, assetModifier, asset));
 				newCheckmark.antialiasing = true;
 
 				newCheckmark.animation.addByPrefix('false finished', 'uncheckFinished');

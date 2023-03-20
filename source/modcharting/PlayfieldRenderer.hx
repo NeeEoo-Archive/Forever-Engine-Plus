@@ -15,9 +15,9 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import gameObjects.userInterface.notes.Note;
 import meta.data.Conductor;
-import meta.state.PlayState;
 import modcharting.Modifier;
 import openfl.geom.Vector3D;
+import state.PlayState;
 
 using StringTools;
 

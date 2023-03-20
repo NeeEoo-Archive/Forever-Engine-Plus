@@ -1,27 +1,17 @@
 package;
 
-import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxGame;
-import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.util.FlxColor;
-import haxe.CallStack.StackItem;
 import haxe.CallStack;
 import haxe.io.Path;
 import lime.app.Application;
-import meta.*;
-import meta.data.PlayerSettings;
 import meta.data.dependency.Discord;
 import meta.data.dependency.FNFTransition;
-import meta.data.dependency.FNFUIState;
-import openfl.Assets;
 import openfl.Lib;
-import openfl.display.FPS;
 import openfl.display.Sprite;
-import openfl.events.Event;
 import openfl.events.UncaughtErrorEvent;
 import sys.FileSystem;
 import sys.io.File;
@@ -39,11 +29,11 @@ class Main extends Sprite
 	public static var mainClassState:Class<FlxState> = Init; // Determine the main class state of the game
 	public static var framerate:Int = 120; // How many frames per second the game should run at.
 
-	public static var engineVersion:String = '0.2.0';
+	public static var engineVersion:String = '0.2.0'; // the engine version of this source
+	public static var debugTools:Bool = true; // set this to false to disable the chart editor and editors
 
 	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
-	var infoCounter:Overlay; // initialize the heads up display that shows information before creating it.
 
 	// most of these variables are just from the base game!
 	// be sure to mess around with these if you'd like.
@@ -95,8 +85,7 @@ class Main extends Sprite
 		var gameCreate:FlxGame;
 		gameCreate = new FlxGame(gameWidth, gameHeight, mainClassState, #if (flixel < "5.0.0") zoom, #end framerate, framerate, skipSplash);
 		addChild(gameCreate); // and create it afterwards
-
-		meta.CoolUtil.loadWeeks(); // loading the weeks
+		addChild(new base.Overlay(8, 6)); // adding the fps overlay
 		FlxG.signals.gameResized.add(onGameResized); // fixes for shader coords when resizing the window
 
 		// begin the discord rich presence
@@ -104,12 +93,6 @@ class Main extends Sprite
 		Discord.initializeRPC();
 		Discord.changePresence('');
 		#end
-
-		// test initialising the player settings
-		PlayerSettings.init();
-
-		infoCounter = new Overlay(0, 0);
-		addChild(infoCounter);
 	}
 
     function onGameResized(w:Int, h:Int)
@@ -118,7 +101,8 @@ class Main extends Sprite
 
 		for(cam in FlxG.cameras.list)
 		{
-			if(cam != null && (cam.filters != null || cam.filters != []))
+			@:privateAccess
+			if(cam != null && (cam._filters != null || cam._filters != []))
 				fixShaderSize(cam);
 		}
 	}
@@ -192,7 +176,7 @@ class Main extends Sprite
 		dateNow = StringTools.replace(dateNow, " ", "_");
 		dateNow = StringTools.replace(dateNow, ":", "'");
 
-		path = "crash/" + "FE_" + dateNow + ".txt";
+		path = "crash/" + "FEP_" + dateNow + ".txt";
 
 		for (stackItem in callStack)
 		{
@@ -205,7 +189,7 @@ class Main extends Sprite
 			}
 		}
 
-		errMsg += "\nUncaught Error: " + e.error + "\nPlease report this error to the GitHub page: https://github.com/Yoshubs/Forever-Engine";
+		errMsg += "\nUncaught Error: " + e.error + "\nPlease report this to the GitHub page: https://github.com/Sword352/Forever-Engine-Plus";
 
 		if (!FileSystem.exists("crash/"))
 			FileSystem.createDirectory("crash/");
@@ -215,7 +199,7 @@ class Main extends Sprite
 		Sys.println(errMsg);
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
-		var crashDialoguePath:String = "FE-CrashDialog";
+		var crashDialoguePath:String = "FEP-CrashDialog";
 
 		#if windows
 		crashDialoguePath += ".exe";

@@ -5,7 +5,7 @@ import flixel.addons.effects.FlxTrail;
 import flixel.util.FlxColor;
 import meta.data.*;
 import meta.data.dependency.FNFSprite;
-import meta.state.PlayState;
+import state.PlayState;
 
 using StringTools;
 
@@ -104,28 +104,21 @@ class Character extends FNFSprite
 
 	public function flipLeftRight():Void
 	{
-		if(animation.getByName("singRIGHT") != null
-			&& animation.getByName("singLEFT") != null
-			&& animation.getByName("singRIGHTMISS") != null
-			&& animation.getByName("singLEFTMISS") != null)
+		if(animation.getByName("singRIGHT") != null && animation.getByName("singLEFT") != null)
 		{
 			// get the old right sprite
 			var oldRight = animation.getByName('singRIGHT').frames;
-
 			// set the right to the left
 			animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
-
 			// set the left to the old right
 			animation.getByName('singLEFT').frames = oldRight;
+		}
 
-			// insert ninjamuffin screaming I think idk I'm lazy as hell
-
-			if (animation.getByName('singRIGHTmiss') != null)
-			{
-				var oldMiss = animation.getByName('singRIGHTmiss').frames;
-				animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
-				animation.getByName('singLEFTmiss').frames = oldMiss;
-			}
+		if(animation.getByName("singRIGHTmiss") != null && animation.getByName("singLEFTmiss") != null)
+		{
+			var oldMiss = animation.getByName('singRIGHTmiss').frames;
+			animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
+			animation.getByName('singLEFTmiss').frames = oldMiss;
 		}
 	}
 
@@ -152,6 +145,18 @@ class Character extends FNFSprite
 		super.update(elapsed);
 	}
 
+	public function beatHit(curBeat:Int)
+	{
+		if(script.exists("onBeat"))
+			script.call("onBeat", [curBeat]);
+	}
+
+	public function stepHit(curStep:Int)
+	{
+		if (script.exists("onStep"))
+			script.call("onStep", [curStep]);
+	}
+
 	public function dance(?forced:Bool = false)
 	{
 		if (script.exists("dance"))
@@ -160,7 +165,7 @@ class Character extends FNFSprite
 			playAnim('idle', forced);
 	}
 
-	public function gfMissAnim(?forced:Bool = false)
+	public function onMiss(?forced:Bool = false)
 	{
 		if (script.exists("onMiss"))
 			script.call("onMiss", [forced]);

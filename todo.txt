@@ -5,19 +5,21 @@ replace the placeholders credits assets
 replace the credits button
 replace the week bgs on story mode
 add github as a social media credit
-remove alt anims section, replace them with alt anims notetypes
+remove alt anims section, replace them with an alt anims notetype
 
 // things that Sword can do himself
-fix some hscripts functions on playstate
+finish the new noteskins system
+finish the custom notetypes
+finish the strum skins depending on the note skin system
+character specific noteskin that overrides the selected note skin option
 finish the animated health icons
 unlocking system for songs and weeks
-general scripts on assets/data/scripts that you can load on the song script
 playstate changeables (playback speed, practice mode etc)
+port week 7
 
 // uuhm someone to help sword pls <:)
 softcoded modcharts (assets/songs/da-song/modchart.json)
 + softcoded modcharts modifiers (assets/data/modcharts-modifiers/da-modifier.hxs)
-custom notetypes
 charting state rework
 characters editor
 stages editor maybe

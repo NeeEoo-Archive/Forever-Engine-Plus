@@ -8,8 +8,7 @@ import flixel.util.FlxColor;
 import gameObjects.userInterface.notes.*;
 import meta.data.Section.SwagSection;
 import meta.data.Song.SwagSong;
-import meta.state.PlayState;
-import meta.state.charting.ChartingState;
+import state.PlayState;
 
 /**
 	This is the chartloader class. it loads in charts, but also exports charts, the chart parameters are based on the type of chart, 
@@ -40,12 +39,15 @@ class ChartLoader
 					{
 						var daStrumTime:Float = #if !neko songNotes[0] - Init.trueSettings['Offset'] /* - | late, + | early */ #else songNotes[0] #end;
 						var daNoteData:Int = Std.int(songNotes[1] % 4);
-						// define the note's animation (in accordance to the original game)!
-						var daNoteAlt:Float = 0;
+						// define the note's notetype
+						var daNoteType:String = "";
 
 						// very stupid but I'm lazy
-						if (songNotes.length > 2)
-							daNoteAlt = songNotes[3];
+						if (songNotes.length > 2) {
+							if(Std.isOfType(songNotes[3], String)) // if the notetype is a string
+								daNoteType = songNotes[3]; // set the notetype
+							else daNoteType = ""; // else the note is normal (avoiding bugs and potential crashes with other engines charts)
+						}
 						/*
 							rest of this code will be mostly unmodified, I don't want to interfere with how FNF chart loading works
 							I'll keep all of the extra features in forever charts, which you'll be able to convert and export to very easily using
@@ -69,7 +71,7 @@ class ChartLoader
 							oldNote = null;
 
 						// create the new note
-						var swagNote:Note = ForeverAssets.generateArrow(PlayState.assetModifier, daStrumTime, daNoteData, 0, daNoteAlt);
+						var swagNote:Note = ForeverAssets.generateArrow(PlayState.assetModifier, daStrumTime, daNoteData, daNoteType);
 						// set note speed
 						swagNote.noteSpeed = songData.speed;
 
@@ -88,7 +90,7 @@ class ChartLoader
 						{
 							oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 							var sustainNote:Note = ForeverAssets.generateArrow(PlayState.assetModifier,
-								daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, 0, daNoteAlt, true, oldNote);
+								daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, daNoteType, true, oldNote);
 							sustainNote.scrollFactor.set();
 
 							unspawnNotes.push(sustainNote);
@@ -101,6 +103,10 @@ class ChartLoader
 						}
 						// oh and set the note's must hit section
 						swagNote.mustPress = gottaHitNote;
+
+						// call load note post for notetypes
+						if (swagNote.noteScript != null && swagNote.noteScript.exists("loadNotePost"))
+							swagNote.noteScript.call("loadNotePost");
 					}
 					daBeats += 1;
 				}

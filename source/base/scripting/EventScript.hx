@@ -1,6 +1,6 @@
 package base.scripting;
 
-import meta.state.PlayState;
+import state.PlayState;
 
 /**
  * WIP

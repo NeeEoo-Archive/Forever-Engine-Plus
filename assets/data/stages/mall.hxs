@@ -5,7 +5,6 @@ var bottomBoppers:FNFSprite;
 var santa:FNFSprite;
 function onCreate()
 {
-	curStage = 'mall';
 	PlayState.defaultCamZoom = 0.80;
 
 	var bg:FNFSprite = new FNFSprite(-1000, -500).loadGraphic(Paths.image('backgrounds/' + curStage + '/bgWalls'));
@@ -64,6 +63,9 @@ function repositionCharacters(bf, dad, gf)
 	bf.x += 200;
 	dad.x -= 400;
 	dad.y += 20;
+
+	bf.characterData.camOffsetY = -50;
+	bf.characterData.camOffsetX = 50;
 }
 
 function onBeat(curBeat)

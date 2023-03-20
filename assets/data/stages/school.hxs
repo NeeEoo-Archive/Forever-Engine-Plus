@@ -3,8 +3,6 @@ import gameObjects.background.BackgroundGirls;
 var bgGirls:BackgroundGirls;
 function onCreate()
 {
-	curStage = 'school';
-
 	var bgSky = new FNFSprite().loadGraphic(Paths.image('backgrounds/' + curStage + '/weebSky'));
 	bgSky.scrollFactor.set(0.1, 0.1);
 	add(bgSky);
@@ -72,6 +70,9 @@ function repositionCharacters(bf, dad, gf)
 	dad.y += 580;
 	gf.x += 200;
 	gf.y += 320;
+
+	bf.characterData.camOffsetX = 150;
+	bf.characterData.camOffsetY = -100;
 }
 
 function onBeat(curBeat)

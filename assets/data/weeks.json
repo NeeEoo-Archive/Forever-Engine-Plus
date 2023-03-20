@@ -75,5 +75,12 @@
         "expression": "hating simulator ft. moawling",
         "hide_from_story": false,
         "hide_from_freeplay": false
+    },
+    {
+        "songs": ["Test"],
+        "icons": ["bf-pixel"],
+        "colors": [[135, 206, 250]],
+        "hide_from_story": true,
+        "hide_from_freeplay": false
     }
 ]

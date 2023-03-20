@@ -53,7 +53,6 @@ import meta.data.Conductor;
 import meta.data.Section.SwagSection;
 import meta.data.Song.SwagSong;
 import meta.data.Song;
-import meta.state.PlayState;
 import modcharting.*;
 import modcharting.ModchartFile;
 import modcharting.ModchartFile;
@@ -65,6 +64,7 @@ import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.geom.Rectangle;
 import openfl.net.FileReference;
+import state.PlayState;
 
 using StringTools;
 

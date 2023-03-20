@@ -42,9 +42,9 @@ class MenuCharacter extends FlxSprite
 		else if(character == newCharacter) return;
 		else
 		{
-			var data:JsonMenuChar = haxe.Json.parse(openfl.Assets.getText(Paths.getPath('images/menus/base/storymenu/characters/$newCharacter/$newCharacter.json',
+			var data:JsonMenuChar = haxe.Json.parse(openfl.Assets.getText(Paths.getPath('images/menus/storymenu/characters/$newCharacter/$newCharacter.json',
 				TEXT)));
-			frames = Paths.getSparrowAtlas('menus/base/storymenu/characters/$newCharacter/${data.name}');
+			frames = Paths.getSparrowAtlas('menus/storymenu/characters/$newCharacter/${data.name}');
 			visible = true;
 
 			animation.addByPrefix("idle", data.anim, data.fps, true);

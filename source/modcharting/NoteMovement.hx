@@ -5,8 +5,8 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import gameObjects.userInterface.notes.Note;
-import meta.state.PlayState;
 import modcharting.ModchartEditorState;
+import state.PlayState;
 
 using StringTools;
 

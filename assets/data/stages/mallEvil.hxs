@@ -1,6 +1,5 @@
 function onCreate()
 {
-	curStage = 'mallEvil';
 	var bg:FNFSprite = new FNFSprite(-400, -500).loadGraphic(Paths.image('backgrounds/mall/evilBG'));
 	bg.antialiasing = true;
 	bg.scrollFactor.set(0.2, 0.2);

@@ -4,7 +4,6 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.FlxGraphic;
 import flixel.input.keyboard.FlxKey;
 import meta.CoolUtil;
-import meta.Overlay;
 import meta.data.Highscore;
 import meta.data.dependency.Discord;
 import meta.state.*;
@@ -129,13 +128,6 @@ class Init extends FlxState
 			NOT_FORCED,
 			['StepMania', 'FNF']
 		],
-		"UI Skin" => [
-			'default',
-			Selector,
-			'Choose a UI Skin for judgements, combo, etc.',
-			NOT_FORCED,
-			''
-		],
 		"Note Skin" => ['default', Selector, 'Choose a note skin.', NOT_FORCED, ''],
 		"Framerate Cap" => [120, Selector, 'Define your maximum FPS.', NOT_FORCED, ['']],
 		"Opaque Arrows" => [
@@ -182,7 +174,39 @@ class Init extends FlxState
 			Checkmark,
 			"Wheter to enable or disable the flashing lights. If you are sensitive to them, please disable this option!",
 			NOT_FORCED
-	    ]
+	    ],
+		'Score Bar Zoom On Hit' =>  [
+			true,
+			Checkmark,
+			"Wheter to enable or disable the score bar zoom when hitting a note.",
+			NOT_FORCED
+		],
+		#if windows
+		'Dark Window Border' => [
+			false,
+			Checkmark,
+			"Choose the window's color.",
+			NOT_FORCED,
+		],
+		'Borderless Window' => [
+			false,
+			Checkmark,
+			"Wheter to hide the window border or not.",
+			NOT_FORCED,
+		],
+		#end
+		'Disable Reset Button' => [
+			false,
+			Checkmark,
+			'Wheter to disable the reset button in gameplay.',
+			NOT_FORCED
+		],
+		'Psych Icon Bops' => [
+			false,
+			Checkmark,
+			'Wheter to enable or disable the psych engine icon bops.',
+			NOT_FORCED
+		]
 	];
 
 	public static var trueSettings:Map<String, Dynamic> = [];
@@ -196,7 +220,7 @@ class Init extends FlxState
 		'ACCEPT' => [[FlxKey.SPACE, Z, FlxKey.ENTER], 4],
 		'BACK' => [[FlxKey.BACKSPACE, X, FlxKey.ESCAPE], 5],
 		'PAUSE' => [[FlxKey.ENTER, P], 6],
-		'RESET' => [[R, null], 13],
+		'RESET' => [[R, FlxKey.EIGHT], 13],
 		'UI_UP' => [[FlxKey.UP, W], 8],
 		'UI_DOWN' => [[FlxKey.DOWN, S], 9],
 		'UI_LEFT' => [[FlxKey.LEFT, A], 10],
@@ -239,7 +263,8 @@ class Init extends FlxState
 	{
 		FlxG.save.bind('foreverengine-options');
 		Highscore.load();
-
+		meta.data.PlayerSettings.init(); // test initialising the player settings
+		meta.CoolUtil.loadWeeks(); // loading the weeks
 		loadSettings();
 		loadControls();
 
@@ -256,7 +281,7 @@ class Init extends FlxState
 		FlxG.mouse.visible = false; // Hide mouse on start
 		FlxGraphic.defaultPersist = true; // make sure we control all of the memory
 
-		Main.switchState(this, new TitleState());
+		Main.switchState(this, new state.TitleState());
 	}
 
 	public static function loadSettings():Void
@@ -289,10 +314,14 @@ class Init extends FlxState
 			|| trueSettings.get("Stage Opacity") > 100)
 			trueSettings.set("Stage Opacity", 100);
 
-		// 'hardcoded' ui skins
-		gameSettings.get("UI Skin")[4] = CoolUtil.returnAssetsLibrary('UI');
-		if (!gameSettings.get("UI Skin")[4].contains(trueSettings.get("UI Skin")))
-			trueSettings.set("UI Skin", 'default');
+		// 'hardcoded' note skins
+		/*noteSkins = haxe.Json.parse(openfl.Assets.getText(Paths.data("noteskins.json")));
+		var noteArray:Array<String> = [];
+		for(skin in noteSkins.keys()) noteArray.push(skin);*/
+		gameSettings.get("Note Skin")[4] = CoolUtil.returnAssetsLibrary("noteskins/notes");
+		if (!gameSettings.get("Note Skin")[4].contains(trueSettings.get("Note Skin")))
+			trueSettings.set("Note Skin", 'default');
+
 		gameSettings.get("Note Skin")[4] = CoolUtil.returnAssetsLibrary('noteskins/notes');
 		if (!gameSettings.get("Note Skin")[4].contains(trueSettings.get("Note Skin")))
 			trueSettings.set("Note Skin", 'default');
@@ -334,13 +363,12 @@ class Init extends FlxState
 	{
 		FlxG.autoPause = trueSettings.get('Auto Pause');
 
-		Overlay.updateDisplayInfo(trueSettings.get('FPS Counter'), trueSettings.get('Debug Info'), trueSettings.get('Memory Counter'));
+		base.Overlay.updateDisplayInfo(trueSettings.get('FPS Counter'), trueSettings.get('Debug Info'), trueSettings.get('Memory Counter'));
 
 		#if !html5
 		Main.updateFramerate(trueSettings.get("Framerate Cap"));
 		#end
 
-		///*
 		filters = [];
 		FlxG.game.setFilters(filters);
 
@@ -354,6 +382,17 @@ class Init extends FlxState
 		}
 
 		FlxG.game.setFilters(filters);
-		// */
+
+		#if windows
+		if(Init.trueSettings.get('Borderless Window'))
+			openfl.Lib.application.window.borderless = true;
+		else
+			openfl.Lib.application.window.borderless = false;
+
+		if (Init.trueSettings.get('Dark Window Border'))
+			base.system.WindowAPI.setWindowColorMode(1);
+		else
+			base.system.WindowAPI.setWindowColorMode(0);
+		#end
 	}
 }

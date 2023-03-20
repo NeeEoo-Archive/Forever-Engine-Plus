@@ -1,0 +1,48 @@
+function loadNote(isSustain, assetModifier)
+{
+	loadGraphic(Paths.image('noteskins/mines/' + assetModifier + '/mines'), true, 133, 128);
+	animation.add('scroll', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 12, false);
+
+	offsetX = 8;
+	offsetY = 8;
+	animation.play('scroll');
+	mustPress = false;
+	followAngle = false;
+}
+
+function loadSplash(noteSplash, noteData)
+{
+	noteSplash.frames = Paths.getSparrowAtlas('noteskins/mines/mine_Explosions');
+	noteSplash.animation.addByPrefix('splash', 'mineExplosion', 36, false);
+	noteSplash.setGraphicSize(Std.int(noteSplash.width * 0.5));
+	noteSplash.updateHitbox();
+	noteSplash.playAnim('splash');
+
+	noteSplash.x -= noteSplash.width / 3;
+	noteSplash.y -= noteSplash.height / 3;
+}
+
+function playSplash(coolNote, strumline)
+{
+	var noteSplashRandom:String = (Std.string((FlxG.random.int(0, 1) + 1)));
+	if (strumline.splashNotes != null)
+		strumline.splashNotes.members[coolNote.noteData].playAnim('anim' + noteSplashRandom, true);
+}
+
+function onUpdate(elapsed)
+{
+	angle += 1;
+}
+
+function onPlayerNoteHit()
+{
+	PlayState.vocals.volume = 0;
+	FlxG.sound.play(Paths.soundRandom("missnote", 1, 3));
+	//PlayState.health -= 0.2;
+	PlayState.boyfriend.playAnim("scared", true);
+}
+
+function onBeat(curBeat)
+{
+	note.playAnim('scroll');
+}

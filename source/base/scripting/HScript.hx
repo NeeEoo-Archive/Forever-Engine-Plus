@@ -4,14 +4,17 @@ import flixel.FlxG;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.effects.FlxTrail;
 import flixel.tweens.FlxTween;
-import gameObjects.shaders.CustomShader;
+import gameObjects.Boyfriend;
+import gameObjects.Character;
+import gameObjects.userInterface.HealthIcon;
+import gameObjects.userInterface.notes.Strumline.UIStaticArrow;
 import meta.data.dependency.FNFSprite;
 import openfl.Assets;
 
 using StringTools;
 /**
  * Any script using Haxe / HScript for handling.
- * @author Leather128
+ * @author Leather128, Sword352
  */
 class HScript extends Script {
 	/**
@@ -57,11 +60,9 @@ class HScript extends Script {
 		'FlxG' => flixel.FlxG,
 		'FNFSprite' => FNFSprite,
 		'Conductor' => meta.data.Conductor,
-		'CustomShader' => CustomShader,
+		'CustomShader' => base.shaders.CustomShader, // in case you wanna add shaders without manager
 		'StringTools' => StringTools,
 		'Json' => haxe.Json,
-		
-		// HScript specific //
 		'FlxMath' => flixel.math.FlxMath,
 		@:access(flixel.math.FlxPoint.FlxBasePoint)
 		'FlxPoint' => flixel.math.FlxPoint.FlxBasePoint,
@@ -70,11 +71,20 @@ class HScript extends Script {
 		'FlxText' => flixel.text.FlxText,
 		'FlxGroup' => flixel.group.FlxGroup,
 		'FlxSpriteGroup' => flixel.group.FlxSpriteGroup,
+		'ForeverTools' => ForeverTools,
+		'ForeverAssets' => ForeverAssets,
+		'UIStaticArrow' => UIStaticArrow,
+		"Character" => Character,
+		"Boyfriend" => Boyfriend,
+		"HealthIcon" => HealthIcon,
 		'Math' => Math,
 		'Std' => Std,
 		'Main' => Main,
+		'CoolUtil' => meta.CoolUtil,
 		'settings' => Init.trueSettings,
-	    'Paths' => Paths
+	    'Paths' => Paths,
+		'platform' => #if windows "windows" #elseif macos "macos" #elseif linux "linux" #else "unknown" #end ,
+		'isDesktop' => #if desktop true #else false #end,
 	];
 
 	// same docs as Script lmao
@@ -102,10 +112,16 @@ class HScript extends Script {
 	public var hscript_path:String = '';
 
 	/**
+	 * Boolean to detect if the script is destroyed.
+	 */
+	public var script_destroyed:Bool = false;
+
+	/**
 	 * Creates and parses the HScript file at `path`.
 	 * @param path Path to the HScript file to use.
 	 */
 	public function new(path:String, call_new:Bool = true) {
+		script_destroyed = false; // just in case
         // Allows typing of variables ex: 'var three:Int = 3;', 'JSON Compatibility', and Haxe Metadata declarations in HScript
 		parser.allowTypes = parser.allowJSON = parser.allowMetadata = true;
 		interp.allowPublicVariables = interp.allowStaticVariables = true;
@@ -160,24 +176,29 @@ class HScript extends Script {
 	 * @param item Item to return.
 	 * @return Value of `item`.
 	 */
-	public override function get(item:String):Dynamic
-		return interp.variables.get(item);
+	public override function get(item:String):Dynamic {
+		if(!script_destroyed) return interp.variables.get(item);
+		else return null;
+	}
 
 	/**
 	 * Returns whether or not `item` exists.
 	 * @param item Item to check.
 	 * @return Whether or not it exists.
 	 */
-	public override function exists(item:String):Bool
-		return interp.variables.exists(item);
+	public override function exists(item:String):Bool {
+		if(!script_destroyed) return interp.variables.exists(item);
+		else return false;
+	}
 
 	/**
 	 * Sets `item` to `value`.
 	 * @param item Item to set.
 	 * @param value Value to set `item` to.
 	 */
-	public override function set(item:String, value:Dynamic):Void
-		return interp.variables.set(item, value);
+	public override function set(item:String, value:Dynamic):Void {
+		if(!script_destroyed) return interp.variables.set(item, value);
+	}
 
 	/**
 	 * Calls `func` with arguments `args` and returns the result.
@@ -186,20 +207,27 @@ class HScript extends Script {
 	 * @return Result of the function.
 	 */
 	public override function call(func:String, ?args:Array<Dynamic>):Dynamic {
-		var real_func:Dynamic = get(func);
+		if(!script_destroyed)
+		{
+			var real_func:Dynamic = get(func);
 
-		// fallback shit
-		try {
-			if (real_func == null)
-				return null;
+			// fallback shit
+			try
+			{
+				if (real_func == null)
+					return null;
 
-			var return_value:Dynamic = Reflect.callMethod(null, real_func, args);
-			return return_value;
-		} catch (e) {
-			trace('Error calling ${func} with ${args}! Details: ${e.details()}');
+				var return_value:Dynamic = Reflect.callMethod(null, real_func, args);
+				return return_value;
+			}
+			catch (e)
+			{
+				trace('Error calling ${func} with ${args}! Details: ${e.details()}');
+			}
+
+			return null;
 		}
-
-		return null;
+		else return null;
 	}
 
 	/**
@@ -218,9 +246,11 @@ class HScript extends Script {
 		// trace dumb >_<
 		set('trace', function(value:Dynamic):Void {
 			// complicated shit (i would use actually haxe trace but this faster i think + that one doesn't get file path correct)
-			Sys.println('[HSCRIPT] ${hscript_path}:${interp.posInfos().lineNumber}: $value');
+			Sys.println('${hscript_path}:${interp.posInfos().lineNumber}: $value');
 		});
 
+		set("close", this.destroy);
+		
 		/*// load other scripts
 		set('load', function(path:String, call_new:Bool = true):Script {
 			var script:Script = Script.load(path);
@@ -242,33 +272,46 @@ class HScript extends Script {
 	 * @param class_to_add Class to add.
 	 */
 	public function add_class(class_to_add:Dynamic, ?custom_name:String):Void {
-		if (custom_name == null) {
-			var class_path_split:Array<String> = Type.getClassName(class_to_add).split('.');
-			set(class_path_split[class_path_split.length - 1], class_to_add);
-		} else
-			set(custom_name, class_to_add);
+		if(!script_destroyed)
+		{
+			if (custom_name == null)
+			{
+				var class_path_split:Array<String> = Type.getClassName(class_to_add).split('.');
+				set(class_path_split[class_path_split.length - 1], class_to_add);
+			}
+			else
+				set(custom_name, class_to_add);
+		}
 	}
 
 	/**
 	 * Adds all classes in the `classes` Array to the script.
 	 * @param classes Array of classes to add.
 	 */
-	public function add_classes(classes:Array<Dynamic>):Void
-		for (class_to_add in classes)
-			add_class(class_to_add);
+	public function add_classes(classes:Array<Dynamic>):Void {
+		if(!script_destroyed)
+		{
+			for (class_to_add in classes)
+				add_class(class_to_add);
+		}
+	}
 
 	/**
 	 * Sets the current script object to `obj`.
 	 * @param obj Object to set it to.
 	 */
 	public override function set_script_object(obj:Dynamic):Void {
-		var obj_class:Dynamic = Type.getClass(obj);
+		if(!script_destroyed)
+		{
+			var obj_class:Dynamic = Type.getClass(obj);
 
-		for (key in Type.getClassFields(obj_class)) {
-			interp.staticVariables.set(key, Reflect.getProperty(obj_class, key));
+			for (key in Type.getClassFields(obj_class))
+			{
+				interp.staticVariables.set(key, Reflect.getProperty(obj_class, key));
+			}
+
+			interp.scriptObject = obj;
 		}
-
-		interp.scriptObject = obj;
 	}
 
 	/**
@@ -276,6 +319,7 @@ class HScript extends Script {
 	 */
 	public override function destroy():Void {
 		call('destroy');
+		script_destroyed = true;
 		
 		// set values to null to try and manually clear them from memory :)
 		parser = null;

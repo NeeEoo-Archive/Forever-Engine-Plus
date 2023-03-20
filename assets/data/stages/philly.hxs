@@ -12,8 +12,6 @@ var startedMoving:Bool = false;
 
 function onCreate()
 {
-	curStage = 'philly';
-
 	var bg:FNFSprite = new FNFSprite(-100).loadGraphic(Paths.image('backgrounds/' + curStage + '/sky'));
 	bg.scrollFactor.set(0.1, 0.1);
 	add(bg);

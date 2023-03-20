@@ -1,15 +1,11 @@
 package meta;
 
+import base.shaders.ShaderManager.ShaderManager;
 import flixel.FlxG;
 import flixel.FlxSubState;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.math.FlxRect;
-import flixel.util.FlxTimer;
-import gameObjects.shaders.ShaderManager;
 import meta.*;
 import meta.data.*;
 import meta.data.Conductor.BPMChangeEvent;
-import meta.data.dependency.FNFUIState;
 
 /* 
 	Music beat state happens to be the first thing on my list of things to add, it just so happens to be the backbone of
@@ -39,7 +35,7 @@ class MusicBeatState extends modcharting.ModchartMusicBeatState
 		// dump
 		Paths.clearStoredMemory();
 		shaders = new ShaderManager();
-		if ((!Std.isOfType(this, meta.state.PlayState)) && (!Std.isOfType(this, meta.state.charting.OriginalChartingState)))
+		if ((!Std.isOfType(this, state.PlayState)) && (!Std.isOfType(this, state.charting.OriginalChartingState)))
 			Paths.clearUnusedMemory();
 
 		if (transIn != null)
@@ -144,7 +140,7 @@ class MusicBeatSubState extends FlxSubState
 	public function new()
 	{
 		super();
-		shaders = new SubstateShaderManager();
+		shaders = new ShaderManager();
 	}
 
 	private var lastBeat:Float = 0;
@@ -153,7 +149,7 @@ class MusicBeatSubState extends FlxSubState
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var controls(get, never):Controls;
-	private var shaders:SubstateShaderManager;
+	private var shaders:ShaderManager;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -203,7 +199,7 @@ class MusicBeatSubState extends FlxSubState
 
 	override function close()
 	{
-		shaders.clearShaders();
+		shaders.clearShaders(); // shaders "mutliplication" bug fix
 		super.close();
 	}
 }

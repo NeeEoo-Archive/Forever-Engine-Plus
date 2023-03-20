@@ -4,8 +4,8 @@ import flixel.FlxG;
 import flixel.math.FlxAngle;
 import flixel.math.FlxMath;
 import gameObjects.userInterface.notes.Note;
-import meta.state.PlayState;
 import openfl.geom.Vector3D;
+import state.PlayState;
 
 class ModchartUtil
 {

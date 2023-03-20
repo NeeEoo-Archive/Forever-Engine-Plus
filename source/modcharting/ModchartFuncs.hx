@@ -3,7 +3,6 @@ package modcharting;
 
 import haxe.Json;
 import meta.data.Conductor;
-import meta.state.PlayState;
 import modcharting.ModchartUtil;
 import modcharting.Modifier;
 import modcharting.NoteMovement;
@@ -11,6 +10,7 @@ import modcharting.PlayfieldRenderer;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.net.FileReference;
+import state.PlayState;
 
 using StringTools;
 
@@ -90,7 +90,7 @@ class ModchartFuncs
     {
         if (instance == null)
         {
-            instance = meta.state.PlayState.instance;
+            instance = state.PlayState.instance;
             if (instance.playfieldRenderer.modchart.scriptListen)
             {
                 instance.playfieldRenderer.modchart.data.modifiers.push([name, modClass, type, pf]);
@@ -161,7 +161,7 @@ class ModchartFuncs
     public static function setModTargetLane(name:String, value:Int, ?instance:ModchartMusicBeatState = null)
     {
         if (instance == null)
-            instance = meta.state.PlayState.instance;
+            instance = state.PlayState.instance;
         if (instance.playfieldRenderer.modifiers.exists(name))
             instance.playfieldRenderer.modifiers.get(name).targetLane = value;
     }
@@ -256,7 +256,7 @@ class ModchartFuncs
     {
         if (instance == null)
         {
-            instance = meta.state.PlayState.instance;
+            instance = state.PlayState.instance;
             if (instance.playfieldRenderer.modchart.scriptListen)
             {
                 instance.playfieldRenderer.modchart.data.events.push(["ease", [beat, time, ease, argsAsString]]);
