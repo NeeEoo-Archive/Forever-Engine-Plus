@@ -1771,10 +1771,11 @@ class PlayState extends MusicBeatState
 
 	public function callDefaultSongEnd()
 	{
-		var difficulty:String = '-' + CoolUtil.difficultyFromNumber(storyDifficulty).toLowerCase();
+		var difficulty:String = '-' + CoolUtil.customDifficulties[storyDifficulty].toLowerCase();
 		if(CoolUtil.weeks[storyWeek].difficulties[storyDifficulty] != null) {
 			difficulty = '-' + CoolUtil.weeks[storyWeek].difficulties[storyDifficulty];
 		}
+		
 		difficulty = difficulty.replace('-normal', '');
 
 		FlxTransitionableState.skipNextTransIn = true;

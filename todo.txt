@@ -8,6 +8,7 @@ add github as a social media credit
 remove alt anims section, replace them with an alt anims notetype
 
 // things that Sword can do himself
+ratings positions on stages + custom positions for fixed judgements
 finish the new noteskins system
 finish the custom notetypes
 finish the strum skins depending on the note skin system

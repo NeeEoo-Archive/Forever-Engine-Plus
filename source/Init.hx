@@ -206,6 +206,18 @@ class Init extends FlxState
 			Checkmark,
 			'Wheter to enable or disable the psych engine icon bops.',
 			NOT_FORCED
+		],
+		'Accurate Fps' => [
+			false,
+			Checkmark,
+			'If checked, shows accurate fps to the fps counter.',
+			NOT_FORCED
+		],
+		'Accurate Memory' => [
+			false,
+			Checkmark,
+			'If checked, shows accurate memory and memory peak to the fps counter.',
+			NOT_FORCED
 		]
 	];
 

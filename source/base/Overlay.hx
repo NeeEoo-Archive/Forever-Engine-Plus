@@ -1,5 +1,6 @@
 package base;
 
+import external.memory.Memory;
 import haxe.Timer;
 import openfl.events.Event;
 import openfl.system.System;
@@ -40,7 +41,7 @@ class Overlay extends TextField
 
 	static final intervalArray:Array<String> = ['B', 'KB', 'MB', 'GB', 'TB'];
 
-	public static function getInterval(num:UInt):String
+	public static function getInterval(num:Dynamic):String
 	{
 		var size:Float = num;
 		var data = 0;
@@ -61,16 +62,29 @@ class Overlay extends TextField
 		while (times[0] < now - 1)
 			times.shift();
 
+		var trueFPS:Float = 0;
+		if (Init.trueSettings.get('Accurate Fps')) trueFPS = times.length;
+		else
+		{
+			if (times.length > Init.trueSettings.get('Framerate Cap'))
+				trueFPS = Init.trueSettings.get('Framerate Cap');
+			else
+				trueFPS = times.length;
+		}
+
 		var mem = System.totalMemory;
 		if (mem > memPeak)
 			memPeak = mem;
 
+		var trueMemory = Init.trueSettings.get('Accurate Memory') ? getInterval(Memory.getCurrentUsage()) : getInterval(mem);
+		var trueMemPeak = Init.trueSettings.get('Accurate Memory') ? getInterval(Memory.getPeakUsage()) : getInterval(memPeak);
+
 		if (visible)
 		{
 			text = '' // set up the text itself
-				+ (displayFps ? "FPS: " + times.length + "\n" : '') // Framerate
-			+ (displayMemory ? 'Memory: ${getInterval(mem)}\nMem Peak: ${getInterval(memPeak)}' + '\n': '') // Current and Total Memory Usage
-			#if !neko + (displayExtra ? "State: " + Main.mainClassState : ''); #else ; #end // Current Game State
+			+ (displayFps ? 'FPS: $trueFPS\n' : '') // Framerate
+			+ (displayMemory ? 'Memory: $trueMemory\nMemory Peak: $trueMemPeak\n' : '') // Current and Total Memory Usage
+			#if !neko + (displayExtra ? 'State: ${Main.mainClassState}' : ''); #else ; #end // Current Game State
 		}
 	}
 
