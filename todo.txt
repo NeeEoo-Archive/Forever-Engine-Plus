@@ -1,32 +1,32 @@
 // things to do asap
 // for arts related things here, its because powerboy is busy and is not on the mood rn
-// but i hope the arts is getting finished soon
+// but i hope the arts are getting finished soon
 replace the placeholders credits assets
 replace the credits button
 replace the week bgs on story mode
 add github as a social media credit
 remove alt anims section, replace them with an alt anims notetype
 
-// things that Sword can do himself
-ratings positions on stages + custom positions for fixed judgements
-finish the new noteskins system
-finish the custom notetypes
-finish the strum skins depending on the note skin system
-character specific noteskin that overrides the selected note skin option
-finish the animated health icons
-unlocking system for songs and weeks
-playstate changeables (playback speed, practice mode etc)
-port week 7
+// Easy Tasks
+- Ratings positions on stages + custom positions for fixed judgements
+- Finish the new noteskins system
+- Finish the custom notetypes
+- Finish the strum skins depending on the note skin system
+- Character specific noteskin that overrides the selected note skin option
+- Finish the animated health icons
+- Playstate changeables (playback speed, practice mode etc)
+- Port week 7
 
-// uuhm someone to help sword pls <:)
-softcoded modcharts (assets/songs/da-song/modchart.json)
+// Hard Tasks
+- Unlocking system for songs and weeks
+- Softcoded modcharts (assets/songs/da-song/modchart.json)
 + softcoded modcharts modifiers (assets/data/modcharts-modifiers/da-modifier.hxs)
-charting state rework
-characters editor
-stages editor maybe
-dialogue editors (characters + the dialogue itself)
-shader editor? maybe idk cuz you can reload them by restarting a song i mean maybe like a shader hot reload state or smth
-modchart editor
+- Charting state rework
+- Characters editor
+- Stages editor (maybe)
+- Dialogue editors (characters + the dialogue itself)
+- Shader editor or shader hot reload state?
+- Finish the modchart editor
 
 then when everything is done...
 making a wiki when everything is done on this todo list
